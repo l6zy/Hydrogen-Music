@@ -1,18 +1,19 @@
 <br />
 <p align="center">
   <a href="https://github.com/Kaidesuyo/Hydrogen-Music" target="blank">
-    <img src="images/icon.png" alt="Logo" width="156" height="156">
+    <img src="img/icon.png" alt="Logo" width="156" height="156">
   </a>
   <h2 align="center" style="font-weight: 600">Hydrogen Music</h2>
 
   <p align="center">
     ⚠️请注意：本项目只是为了尽快应付毕业设计的产物，完全没有根据软件工程规范编写，仅供参考！
     <br />
-    <a href="#%EF%B8%8F-安装" target="blank"><strong>📦️ 下载安装包</strong></a>&nbsp;&nbsp;|&nbsp;&nbsp;
+    <a href="#%EF%B8%8F-安装" target="blank"><strong>📦️ 下载安装包</strong></a>
     <br />
     <br />
   </p>
 </p>
+
 ## 📦️ 安装
 
 访问 [Releases](https://github.com/Kaidesuyo/Hydrogen-Music/releases)
@@ -47,8 +48,8 @@ npm start
 ## 灵感来源
 
 API 源代码来自:
-[Binaryify/NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi)
-[SocialSisterYi/bilibili-API-collect](https://github.com/SocialSisterYi/bilibili-API-collect)
+网易云API：[Binaryify/NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi)<br />
+哔哩哔哩API：[SocialSisterYi/bilibili-API-collect](https://github.com/SocialSisterYi/bilibili-API-collect)
 
 - [qier222/YesPlayMusic](https://github.com/qier222/YesPlayMusic)
 - [Apple Music](https://music.apple.com)
