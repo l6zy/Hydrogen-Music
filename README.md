@@ -30,12 +30,12 @@
 
 ```shell
 # 安装依赖
-yarn install
+npm install
 
-# 运行（网页端）
+# 运行Vue服务
 npm run dev
 
-# 运行（electron）
+# 运行Electron客户端
 npm start
 ```
 
