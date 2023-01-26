@@ -47,8 +47,7 @@ npm start
 
 ## 灵感来源
 
-API 源代码来自:
-网易云API：[Binaryify/NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi)<br />
+网易云音乐API：[Binaryify/NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi)<br />
 哔哩哔哩API：[SocialSisterYi/bilibili-API-collect](https://github.com/SocialSisterYi/bilibili-API-collect)
 
 - [qier222/YesPlayMusic](https://github.com/qier222/YesPlayMusic)
