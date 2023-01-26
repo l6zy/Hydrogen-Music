@@ -23,6 +23,9 @@
 
 由于个人设备限制，只打包了Windows平台的安装包且并未适配macOs与Linux平台。
 如有可能，您可以在开发环境中自行适配。
+```shell
+# 打包
+npm run dist
 
 ## :computer: 配置开发环境
 
