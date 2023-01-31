@@ -11,9 +11,9 @@ lerna-debug.log*
 dist-ssr
 
 # Editor directories and files
-node_modules
-release
-dist
+node_modules/*
+release/*
+dist/*
 .vscode/*
 !.vscode/extensions.json
 .idea
