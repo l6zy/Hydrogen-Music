@@ -1,7 +1,7 @@
 {
   "name": "hydrogenmusic",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "main": "background.js",
   "author": "1208875929@qq.com",
   "scripts": {
