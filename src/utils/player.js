@@ -401,6 +401,19 @@ export function likeSong(like) {
             getLikelist(userStore.user.userId).then(res => {
                 userStore.likelist = res.ids
             })
+            otherStore.addPlaylistShow = false
+            libraryStore.needTimestamp.push('/playlist/detail')
+            libraryStore.needTimestamp.push('/playlist/track/all')
+            let noCacheTimer = null
+            if(noCacheTimer) clearTimeout(noCacheTimer)
+            noCacheTimer = setTimeout(() => {
+                libraryStore.needTimestamp.splice(needTimestamp.value.indexOf('/playlist/detail'), 1)
+                libraryStore.needTimestamp.splice(needTimestamp.value.indexOf('/playlist/track/all'), 1)
+                clearTimeout(noCacheTimer)
+            }, 130000);
+            if(libraryStore.listType1 == 0 && libraryStore.listType2 == 0) {
+            document.getElementById('myPlaylist').click()
+            }
         } else {
             noticeOpen("喜欢/取消喜欢 音乐失败！", 2)
         }

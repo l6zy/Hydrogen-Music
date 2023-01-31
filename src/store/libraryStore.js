@@ -54,12 +54,24 @@ export const useLibraryStore = defineStore('libraryStore', {
         async updatePlaylistDetail(id) {
             let params = {
                 id: id,
+                limit: 1000,
                 offset: 0,
                 // timestamp: new Date().getTime()
             }
-            await Promise.all([getPlaylistDetail(params), getPlaylistAll(params), playlistDynamic(id)]).then(results => {
+            await Promise.all([getPlaylistDetail(params), getPlaylistAll(params), playlistDynamic(id)]).then(async results => {
                 this.libraryInfo = results[0].playlist
                 this.librarySongs = results[1].songs
+                if(results[0].playlist.trackIds.length > 1000) {
+                    for (let i = 1; i < (results[0].playlist.trackIds.length / 1000); i++) {
+                        const params = {
+                            id: id,
+                            limit: 1000,
+                            offset: i * 1000,
+                        }
+                        const res = await getPlaylistAll(params)
+                        this.librarySongs = this.librarySongs.concat(res.songs)
+                    }
+                }
                 this.libraryInfo.followed = results[2].subscribed
                 this.libraryChangeAnimation = false
             })

@@ -50,6 +50,7 @@ export const useLocalStore = defineStore('localStore', {
                 windowApi.startDownload()
                 this.isFirstDownload = false
             }
+            noticeOpen('已添加到下载列表', 2)
         },
         getSongs(arr) {
             arr.forEach(song => {
