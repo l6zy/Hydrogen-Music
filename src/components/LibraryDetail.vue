@@ -331,6 +331,7 @@
           justify-content: space-around;
           align-items: flex-start;
           text-align: left;
+          user-select: text;
           .introduce-name{
             width: 90%;
             font:  22Px Source Han Sans;

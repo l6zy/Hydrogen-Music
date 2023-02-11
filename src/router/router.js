@@ -12,10 +12,12 @@ import LocalMusicDetail from '../components/LocalMusicDetail.vue'
 import SearchResult from '../views/SearchResult.vue'
 import Settings from '../views/Settings.vue'
 
+import { useUserStore } from '../store/userStore'
 import { useLibraryStore } from '../store/libraryStore'
 import { useLocalStore } from '../store/localStore'
 import { storeToRefs } from 'pinia'
 import { useOtherStore } from '../store/otherStore'
+const userStore = useUserStore()
 const libraryStore = useLibraryStore()
 const { updateLibraryDetail } = libraryStore
 const { libraryInfo } = storeToRefs(libraryStore)
@@ -27,13 +29,18 @@ const routes = [
         path: '/',
         name: 'homepage',
         component: HomePage,
+        beforeEnter: (to, from, next) => {
+            if(!userStore.homePage) next({name: 'mymusic'})
+            else next()
+        },
     },
     {
         path: '/cloud',
         name: 'clouddisk',
         component: CloudDisk,
         beforeEnter: (to, from, next) => {
-            if(isLogin()) next()
+            if(!userStore.cloudDiskPage) next({name: 'mymusic'})
+            else if(isLogin()) next()
             else {next({name: 'login'});noticeOpen("请先登录", 2)}
         },
     },

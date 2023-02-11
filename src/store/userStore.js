@@ -8,6 +8,8 @@ export const useUserStore = defineStore('userStore', {
             likelist: null,
             appOptionShow: false,
             biliUser: null,
+            homePage: true,
+            cloudDiskPage: true,
         }
     },
     actions: {
@@ -17,6 +19,6 @@ export const useUserStore = defineStore('userStore', {
     },
     persist: {
         storage: localStorage,
-        paths: ['user','biliUser']
+        paths: ['user','biliUser','homePage','cloudDiskPage']
     },
 })

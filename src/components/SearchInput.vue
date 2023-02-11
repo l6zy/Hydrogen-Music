@@ -60,7 +60,7 @@
     position: relative;
     bottom: -3px;
     display: flex;
-    transition: 0.3s ease-out;
+    transition: 0.3s cubic-bezier(.24,.97,.59,1);
     .search-input{
         width: 100%;
         padding: 0 10Px;
@@ -137,7 +137,7 @@
     }
   }
   .search-container-foucs{
-    width: 170Px;
+    width: 160Px;
   }
   .fade-enter-active,
   .fade-leave-active {

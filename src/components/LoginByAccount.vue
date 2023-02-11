@@ -51,8 +51,8 @@
   }
    
   async function login() {
-    if(props.currentMode == 1) {
-      noticeOpen('手机登录暂时禁用，请扫码登录', 2)
+    if(props.currentMode == 0 || props.currentMode == 1) {
+      noticeOpen('邮箱与手机登录暂时禁用，请扫码登录', 2)
       return
     }
     if(props.currentMode == 0) {

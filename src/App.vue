@@ -9,8 +9,11 @@
   import ContextMenu from './components/ContextMenu.vue'
   import GlobalDialog from './components/GlobalDialog.vue'
   import GlobalNotice from './components/GlobalNotice.vue'
+  import Update from './components/Update.vue'
+
   import { usePlayerStore } from './store/playerStore'
   import { useOtherStore } from './store/otherStore'
+
   const playerStore = usePlayerStore()
   const otherStore = useOtherStore()
   
@@ -53,6 +56,7 @@
   <div class="globalNotice">
     <GlobalNotice></GlobalNotice>
   </div>
+  <Update></Update>
 </template>
 
 <style lang="scss">

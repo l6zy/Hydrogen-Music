@@ -1,15 +1,12 @@
 <script setup>
-  import { ref } from 'vue'
   import { useRouter } from 'vue-router';
   import { logout } from '../api/user'
   import { noticeOpen } from "../utils/dialog";
   import { isLogin } from '../utils/authority'
   import { useUserStore } from '../store/userStore';
-  import { useOtherStore } from '../store/otherStore'
 
   const router  =useRouter()
   const userStore = useUserStore()
-  const otherStore = useOtherStore()
   
   const toSettings = () => {
       router.push('/settings')
@@ -20,6 +17,7 @@
         if(result.code == 200) {
             window.localStorage.clear()
             userStore.user = null
+            userStore.biliUser = null
             router.push('/')
             noticeOpen("已退出账号", 2)
         }
@@ -33,11 +31,11 @@
   <div>
     <main>
       <div class="home-header">
-        <div class="header-router">
+        <div class="header-router" :class="{'router-closed': !userStore.homePage && !userStore.cloudDiskPage}">
           <!-- <div class="logout" @click="userLogout()">退出登录</div> -->
-          <router-link class="button-home" to="/">首页</router-link>
-          <router-link class="button-cloud" to="/cloud">云盘</router-link>
-          <router-link class="button-music" to="/mymusic">我的音乐</router-link>
+          <router-link class="button-home" :style="{color: router.currentRoute.value.name == 'homepage' ? 'black' : '#353535'}" to="/" v-if="userStore.homePage">首页</router-link>
+          <router-link class="button-cloud" :style="{color: router.currentRoute.value.name == 'clouddisk' ? 'black' : '#353535'}" to="/cloud" v-if="userStore.cloudDiskPage">云盘</router-link>
+          <router-link class="button-music" :style="{color: router.currentRoute.value.name == 'mymusic' ? 'black' : '#353535'}" to="/mymusic" v-if="userStore.homePage || userStore.cloudDiskPage">我的音乐</router-link>
           <div class="user">
             <div class="user-container">
               <div class="user-head" @click="userStore.appOptionShow = true">
@@ -56,14 +54,14 @@
               </div>
             </div>
           </div>
-          <div v-show="router.currentRoute.value.name != 'search' && router.currentRoute.value.name != 'settings'" :class="{'router-tracker': true, 'router-tracker0': router.currentRoute.value.name == 'homepage', 'router-tracker1': router.currentRoute.value.name == 'clouddisk', 'router-tracker2': router.currentRoute.value.fullPath.split('/')[1] == 'mymusic' || router.currentRoute.value.fullPath.split('/')[1] == 'login'}">
+          <div v-if="userStore.homePage && userStore.cloudDiskPage" v-show="router.currentRoute.value.name != 'search' && router.currentRoute.value.name != 'settings'" :class="{'router-tracker': true, 'router-tracker0': router.currentRoute.value.name == 'homepage', 'router-tracker1': router.currentRoute.value.name == 'clouddisk', 'router-tracker2': router.currentRoute.value.fullPath.split('/')[1] == 'mymusic' || router.currentRoute.value.fullPath.split('/')[1] == 'login'}">
           </div>
         </div>
       </div>
       
       <div class="home-content">
         <router-view  v-slot="{ Component }">
-          <keep-alive >
+          <keep-alive>
             <component :is="Component"></component>
           </keep-alive>
         </router-view>
@@ -90,8 +88,11 @@
         color: black;
         outline: none;
       }
+      .button-home{
+        margin-right: 40px;
+      }
       .button-cloud{
-        margin: 0 40px;
+        margin-right: 40px;
       }
       .router-tracker{
         width: 14px;
@@ -206,6 +207,16 @@
             }
           }
         }
+      }
+    }
+    .router-closed{
+      width: 100%;
+      height: 28px;
+      .user{
+        position: absolute;
+        left: 365px;
+        transform: translateY(-55%);
+        z-index: 999;
       }
     }
   }

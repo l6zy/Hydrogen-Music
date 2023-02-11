@@ -148,7 +148,7 @@
               }
             }
             .tip{
-              font: 16Px Gilroy-ExtraBold;
+              font: 16Px Bender-Bold;
               color: black;
               white-space: nowrap;
               opacity: 0;

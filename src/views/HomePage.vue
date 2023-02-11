@@ -29,9 +29,6 @@
       display: flex;
       flex-direction: row;
       justify-content: space-between;
-      .banner{
-        
-      }
     }
     .page-content{
       margin-top: 40px;

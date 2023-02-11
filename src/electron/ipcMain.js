@@ -1,8 +1,9 @@
-const { ipcMain, shell, dialog, globalShortcut, Menu } =  require('electron')
+const { ipcMain, shell, dialog, globalShortcut, Menu, clipboard } =  require('electron')
 const axios = require('axios')
 const fs = require('fs');
 const path = require('path')
 const { parseFile } = require('music-metadata');
+// const jsmediatags = require("jsmediatags");
 const registerShortcuts = require('./shortcuts')
 const Store = require('electron-store')
 const CancelToken = axios.CancelToken;
@@ -97,7 +98,19 @@ module.exports = IpcMainEvent = (win, app) => {
                         name: '减少音量',
                         shortcut: 'CommandOrControl+Down',
                         globalShortcut: 'CommandOrControl+Alt+Down',
-                    }
+                    },
+                    {
+                        id: 'processForward',
+                        name: '快进(3s)',
+                        shortcut: 'CommandOrControl+]',
+                        globalShortcut: 'CommandOrControl+Alt+]',
+                    },
+                    {
+                        id: 'processBack',
+                        name: '后退(3s)',
+                        shortcut: 'CommandOrControl+[',
+                        globalShortcut: 'CommandOrControl+Alt+[',
+                    },
                 ],
                 other: {
                     quitApp:'minimize'
@@ -160,14 +173,14 @@ module.exports = IpcMainEvent = (win, app) => {
             musicVideoStore.set('musicVideo', [data])
         }
     }
-   function fileIsExists(path) { 
+    function fileIsExists(path) { 
         return new Promise((resolve, reject) => {
             fs.access(path, fs.constants.F_OK, (err) => {
                 if (!err) resolve(true)
                 else return resolve(false)
             });
         })
-     }
+    }
     ipcMain.handle('get-bili-video', async (e, request) => {
         const settings = await settingsStore.get('settings')
         if(!settings.local.videoFolder) return 'noSavePath'
@@ -188,7 +201,8 @@ module.exports = IpcMainEvent = (win, app) => {
                 onDownloadProgress:(progressEvent)=>{
                     let progress = Math.round( progressEvent.loaded / progressEvent.total*100);
                     win.webContents.send('download-video-progress', progress)
-                    win.setProgressBar(progress / 100);
+                    if(returnCode == 'cancel') win.setProgressBar(-1);
+                    else win.setProgressBar(progress / 100);
                 },
                 cancelToken: new CancelToken(function executor(c) {
                     cancel = c;
@@ -201,8 +215,8 @@ module.exports = IpcMainEvent = (win, app) => {
                 writer.close()
                 writer.once('close', () => {
                     cancel()
-                    fs.unlinkSync(path);
                     win.setProgressBar(-1);
+                    fs.unlinkSync(path);
                 })
             })
             return new Promise((resolve, reject) => {
@@ -250,7 +264,6 @@ module.exports = IpcMainEvent = (win, app) => {
     })
     ipcMain.handle('delete-music-video', async (e, id) => {
         const musicVideo = await musicVideoStore.get('musicVideo')
-        console.log(id)
         return new Promise((resolve, reject) => {
             searchMusicVideo(id).then(result => {
                 if(result) {
@@ -260,5 +273,53 @@ module.exports = IpcMainEvent = (win, app) => {
                 } else resolve(false)
             })
         })
+    })
+    //获取本地歌词
+    ipcMain.handle('get-local-music-lyric', async (e, filePath) => {
+        const metedata = await parseFile(filePath)
+        if(metedata.common.lyrics) return metedata.common.lyrics[0]
+        // async function getLyricByFile(filePath) {
+        //     return new Promise((resolve, reject) => {
+        //         jsmediatags.read(filePath, {
+        //             onSuccess: (tag) => {
+        //                 resolve(tag)
+        //             },
+        //             onError: (error) => {
+        //                 console.log(':(', error.type, error.info);
+        //                 reject(error)
+        //             }
+        //         });
+        //     })
+        // }
+        // return await getLyricByFile(filePath)
+        const str = filePath.split('\\')
+        const folderPath = filePath.substring(0, filePath.length - str[str.length - 1].length - 1)
+        const fileName = path.basename(filePath, path.extname(filePath))
+        async function readLyric(path) {
+            return fs.readFileSync(path, 'utf8', (err, data) => {
+                if (err) return false
+                else return data
+            })
+        }
+        function lyricHandle(data) {
+            const lines = data.split(/\r?\n/)
+            let lyricArr = ''
+            lines.forEach((line) => {
+                if(line) lyricArr += line + '\n'
+            })
+            return lyricArr
+        }
+        if(await fileIsExists(folderPath + '\\' + fileName + '.lrc')) {
+            const res = await readLyric(folderPath + '\\' + fileName + '.lrc')
+            if(res) return lyricHandle(res)
+        }
+        if(await fileIsExists(folderPath + '\\' + fileName + '.txt')) {
+            const res = await readLyric(folderPath + '\\' + fileName + '.txt')
+            if(res) return lyricHandle(res)
+        }
+        return false
+    })
+    ipcMain.on('copy-txt', (e, txt) => {
+        clipboard.writeText(txt)
     })
 }

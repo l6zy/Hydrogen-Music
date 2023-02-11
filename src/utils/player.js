@@ -23,6 +23,7 @@ let musicProgress = null
 let loadLast = true
 let playModeOne = false //为true代表顺序播放已全部结束
 let currentTiming = null
+let videoCheckInterval = null
 
 export function loadLastSong() {
     if(loadLast) {
@@ -158,6 +159,12 @@ export function addLocalMusicTOList(listType, localMusicList, playId, playIndex)
     addSong(playId, playIndex, true, true)
     savePlaylist()
 }
+export function startLocalMusicVideo() {
+    clearInterval(videoCheckInterval)
+    videoCheckInterval = setInterval(() => {
+        musicVideoCheck(currentMusic.value.seek())
+    }, 200);
+}
 export function unloadMusicVideo() {
     currentMusicVideo.value = null
     videoIsPlaying.value = false
@@ -167,11 +174,14 @@ export function loadMusicVideo(id) {
     if(currentMusicVideo.value) unloadMusicVideo()
     windowApi.musicVideoIsExists({id: id, method: 'verify'}).then(result => {
         if(result == '404') {
+            videoCheckInterval = null
             noticeOpen('未找到视频文件', 2)
             unloadMusicVideo()
         } else if(result) {
             currentMusicVideo.value = result.data
+            if(songList.value[currentIndex.value].type == 'local') startLocalMusicVideo()
         } else {
+            videoCheckInterval = null
             unloadMusicVideo()
         }
     })
@@ -213,7 +223,11 @@ export function setSongLevel(level) {
     else if(level == 'hires') songList.value[currentIndex.value].level = songList.value[currentIndex.value].hr
     songList.value[currentIndex.value].quality = level
 }
-
+export async function getLocalLyric(filePath) {
+    const lyric = await windowApi.getLocalMusicLyric(filePath)
+    if(lyric) return lyric
+    else return false
+}
 export async function getSongUrl(id, index, autoplay, isLocal) {
     if(isLocal) {
         windowApi.getLocalMusicImage(songList.value[currentIndex.value].url).then(base64 => {
@@ -222,6 +236,10 @@ export async function getSongUrl(id, index, autoplay, isLocal) {
         play(songList.value[currentIndex.value].url, autoplay)
         lyric.value = null
         lyricsObjArr.value = null
+        // const localLyric = await getLocalLyric(songList.value[currentIndex.value].url)
+        // if(localLyric) {
+        //     lyric.value = {lrc:{lyric:localLyric}}
+        // }
         if(!lyricShow.value && !widgetState.value) {
             lyricShow.value = true
             playerChangeSong.value = false
@@ -259,7 +277,10 @@ export function startMusic() {
             clearTimeout(forbidDelayTimer)
         }, 700);
     }
-    if(videoIsPlaying.value) musicVideoDOM.value.play()
+    if(videoIsPlaying.value) {
+        musicVideoDOM.value.play()
+        if(songList.value[currentIndex.value].type == 'local') startLocalMusicVideo()
+    }
 }
 export function pauseMusic() {
     clearInterval(musicProgress)
@@ -270,7 +291,10 @@ export function pauseMusic() {
             playing.value = false
         })
     }
-    if(videoIsPlaying.value) musicVideoDOM.value.pause()
+    if(videoIsPlaying.value) {
+        musicVideoDOM.value.pause()
+        if(songList.value[currentIndex.value].type == 'local') clearInterval(videoCheckInterval)
+    }
 }
 
 export function playLast() {
@@ -323,11 +347,12 @@ const clearLycAnimation = () => {
     isLyricDelay.value = false
     for (let i = 0; i < lyricEle.value.length; i++) {
       lyricEle.value[i].style.transitionDelay = 0 + 's'
+      lyricEle.value[i].firstChild.style.setProperty("filter", "blur(0)");
     }
     const forbidDelayTimer =  setTimeout(() => {
         isLyricDelay.value = true
         clearTimeout(forbidDelayTimer)
-    }, 700);
+    }, 600);
   }
 export function changeProgress(toTime) {
     if(!widgetState.value && lyricShow.value && lyricEle.value) clearLycAnimation()
@@ -441,6 +466,7 @@ export function addToNext(nextSong, autoplay) {
     }
     if(autoplay) playNext()
     else if(songList.value.length == 1) addSong(nextSong.id, 0, false)
+    noticeOpen('已添加至下一首', 2)
 }
 export function addToNextLocal(song, autoplay) {
     addToNext(localMusicHandle([song], true), autoplay)
@@ -556,6 +582,16 @@ windowApi.volumeDown(() => {
     if(volume.value - 0.1 > 0) volume.value -= 0.1
     else volume.value = 0
     currentMusic.value.volume(volume.value)
+})
+windowApi.musicProcessControl((event, mode) => {
+    if(mode == 'forward') {
+        if(progress.value + 3 < currentMusic.value.duration()) progress.value += 3
+        else progress.value = currentMusic.value.duration()
+    } else if(mode == 'back') {
+        if(progress.value - 3 > 0) progress.value -= 3
+        else progress.value = 0
+    }
+    currentMusic.value.seek(progress.value)
 })
 windowApi.playOrPauseMusicCheck(playing.value)
 windowApi.changeTrayMusicPlaymode(playMode.value)

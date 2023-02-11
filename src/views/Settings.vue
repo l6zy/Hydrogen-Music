@@ -29,9 +29,9 @@
   const shortcutCharacter  = ['=', '-', '~', '@', '#', '$', '[', ']', ';', "'", ',', '.', '/', '!'];
 
   if(isLogin()) {
-      getVipInfo().then(result => {
-          vipInfo.value = result.data
-      })
+    getVipInfo().then(result => {
+        vipInfo.value = result.data
+    })
   }
   onActivated(() => {
     windowApi.getSettings().then(settings => {
@@ -158,12 +158,11 @@
     if ((k.keyCode >= 65 && k.keyCode <= 90) || (k.keyCode >= 48 && k.keyCode <= 57) || (k.keyCode >= 96 && k.keyCode <= 105) || (k.keyCode >= 112 && k.keyCode <= 123) || ['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'].includes(k.key) || shortcutCharacter.includes(k.key)) {
         if(selectedShortcut.value.type) shortcutsList.value.find(sc => (sc.id == selectedShortcut.value.id)).globalShortcut = updateShortcut()
         else shortcutsList.value.find(sc => (sc.id == selectedShortcut.value.id)).shortcut = updateShortcut()
-        console.log(updateShortcut())
         newShortcut.value = []
     }
   }
   const setDefaultShortcuts = () => {
-      shortcutsList.value = [{id: 'play',name: '播放/暂停',shortcut: 'CommandOrControl+P',globalShortcut: 'CommandOrControl+Alt+P',},{id: 'last',name: '上一首',shortcut: 'CommandOrControl+Left',globalShortcut: 'CommandOrControl+Alt+Left',},{id: 'next',name: '下一首',shortcut: 'CommandOrControl+Right',globalShortcut: 'CommandOrControl+Alt+Right',},{id: 'volumeUp',name: '增加音量',shortcut: 'CommandOrControl+Up',globalShortcut: 'CommandOrControl+Alt+Up',},{id: 'volumeDown',name: '减少音量',shortcut: 'CommandOrControl+Down',globalShortcut: 'CommandOrControl+Alt+Down',}]
+      shortcutsList.value = [{id: 'play',name: '播放/暂停',shortcut: 'CommandOrControl+P',globalShortcut: 'CommandOrControl+Alt+P',},{id: 'last',name: '上一首',shortcut: 'CommandOrControl+Left',globalShortcut: 'CommandOrControl+Alt+Left',},{id: 'next',name: '下一首',shortcut: 'CommandOrControl+Right',globalShortcut: 'CommandOrControl+Alt+Right',},{id: 'volumeUp',name: '增加音量',shortcut: 'CommandOrControl+Up',globalShortcut: 'CommandOrControl+Alt+Up',},{id: 'volumeDown',name: '减少音量',shortcut: 'CommandOrControl+Down',globalShortcut: 'CommandOrControl+Alt+Down',},{id: 'processForward',name: '快进(3s)',shortcut: 'CommandOrControl+]',globalShortcut: 'CommandOrControl+Alt+]'},{id: 'processBack',name: '后退(3s)',shortcut: 'CommandOrControl+[',globalShortcut: 'CommandOrControl+Alt+['},]
   }
   const clearMusicVideo = () => {
       windowApi.clearUnusedVideo().then(result => {
@@ -177,7 +176,7 @@
   }
   const setMusicVideo = () => {
     if(!playerStore.musicVideo)
-        dialogOpen('确定开启', '开启后此功能会消耗一定性能，确定开启吗？', openMusicVideo)
+        dialogOpen('确定开启', '开启后此功能会消耗一定性能且可能造成卡顿，确定开启吗？', openMusicVideo)
     else
         openMusicVideo(true)
   }
@@ -185,13 +184,22 @@
     if(flag)
         playerStore.musicVideo = !playerStore.musicVideo
   }
+  const setLyricBlur = () => {
+    if(!playerStore.lyricBlur)
+        dialogOpen('确定开启', '开启后此功能会消耗一定性能且可能造成卡顿，确定开启吗？', openLyricBlur)
+    else
+        openLyricBlur(true)
+  }
+  const openLyricBlur = (flag) => {
+    if(flag) playerStore.lyricBlur = !playerStore.lyricBlur
+  }
   const userLogout = () => {
     if(isLogin()){
         logout().then(result => {
-            console.log(result)
         if(result.code == 200) {
             window.localStorage.clear()
             userStore.user = null
+            userStore.biliUser = null
             router.push('/')
             noticeOpen("已退出账号", 2)
         }
@@ -252,6 +260,17 @@
                                 <option value="lossless">无损</option>
                                 <option value="hires">Hi-Res</option>
                             </select>
+                        </div>
+                    </div>
+                    <div class="option">
+                        <div class="option-name">开启歌词模糊</div>
+                        <div class="option-operation">
+                            <div class="toggle" @click="setLyricBlur()">
+                                <div class="toggle-off" :class="{'toggle-on-in': playerStore.lyricBlur}">{{playerStore.lyricBlur ? '已开启' : '已关闭'}}</div>
+                                <Transition name="toggle">
+                                    <div class="toggle-on" v-show="playerStore.lyricBlur"></div>
+                                </Transition>
+                            </div>
                         </div>
                     </div>
                     <div class="option">
@@ -348,6 +367,28 @@
                 <h2 class="item-title">其他</h2>
                 <div class="line"></div>
                 <div class="item-options">
+                    <div class="option">
+                        <div class="option-name">开启首页页面</div>
+                        <div class="option-operation">
+                            <div class="toggle" @click="userStore.homePage = !userStore.homePage">
+                                <div class="toggle-off" :class="{'toggle-on-in': userStore.homePage}">{{userStore.homePage ? '已开启' : '已关闭'}}</div>
+                                <Transition name="toggle">
+                                    <div class="toggle-on" v-show="userStore.homePage"></div>
+                                </Transition>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="option">
+                        <div class="option-name">开启云盘页面</div>
+                        <div class="option-operation">
+                            <div class="toggle" @click="userStore.cloudDiskPage = !userStore.cloudDiskPage">
+                                <div class="toggle-off" :class="{'toggle-on-in': userStore.cloudDiskPage}">{{userStore.cloudDiskPage ? '已开启' : '已关闭'}}</div>
+                                <Transition name="toggle">
+                                    <div class="toggle-on" v-show="userStore.cloudDiskPage"></div>
+                                </Transition>
+                            </div>
+                        </div>
+                    </div>
                     <div class="option">
                         <div class="option-name">退出应用时</div>
                         <div class="option-operation">

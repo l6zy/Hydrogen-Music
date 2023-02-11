@@ -5,7 +5,7 @@
   import { storeToRefs } from 'pinia'
 
   const playerStore = usePlayerStore()
-  const { playing, progress, lyric, lyricsObjArr, songList, currentIndex, currentMusic, widgetState, lyricShow, lyricEle, isLyricDelay, lyricSize, tlyricSize, rlyricSize, lyricType, playerChangeSong, lyricInterludeTime } = storeToRefs(playerStore)
+  const { playing, progress, lyric, lyricsObjArr, songList, currentIndex, currentMusic, widgetState, lyricShow, lyricEle, isLyricDelay, lyricSize, tlyricSize, rlyricSize, lyricType, playerChangeSong, lyricInterludeTime, lyricBlur, playerShow } = storeToRefs(playerStore)
 
   const lyricScroll = ref()
   const lyricScrollArea = ref()
@@ -129,11 +129,13 @@
     isLyricDelay.value = false
     for (let i = 0; i < lyricEle.value.length; i++) {
       lyricEle.value[i].style.transitionDelay = 0 + 's'
+      lyricEle.value[i].firstChild.style.setProperty("filter", "blur(0px)");
     }
-    const forbidDelayTimer =  setTimeout(() => {
-        isLyricDelay.value = true
-        clearTimeout(forbidDelayTimer)
-    }, 600);
+    isLyricDelay.value = true
+    // const forbidDelayTimer =  setTimeout(() => {
+    //     isLyricDelay.value = true
+    //     clearTimeout(forbidDelayTimer)
+    // }, 600);
   }
   const setMaxHeight = (change) => {
     if(!lyricsObjArr.value) return
@@ -178,20 +180,30 @@
       const lastIndex = lycCurrentIndex.value
       const currentSeek = currentMusic.value.seek()
       musicVideoCheck(currentSeek)
+      if(!playerShow.value) return
       lycCurrentIndex.value =  lyricsObjArr.value.findIndex((item, index) => {
         if(index != length) {
-          return (currentSeek + 0.1) * 1000 < (lyricsObjArr.value[index + 1].time) * 1000
+          return (currentSeek + 0.2) * 1000 < (lyricsObjArr.value[index + 1].time) * 1000
         }
         if(index == length) {
-          return (currentSeek + 0.1) * 1000 > item.time * 1000
+          return (currentSeek + 0.2) * 1000 > item.time * 1000
         }
       })
       if(lastIndex != lycCurrentIndex.value) {
         let offset = null
-        if(lyricShow.value && isLyricDelay.value && lyricEle.value ) {
-          for (let i = lycCurrentIndex.value, j = 0; i < lyricEle.value.length; i++) {
+        if(lyricShow.value && isLyricDelay.value && lyricEle.value) {
+          if(lyricBlur.value)
+            for (let i = 0, j = lycCurrentIndex.value * 0.4; i < lycCurrentIndex.value; i++) {
+              lyricEle.value[i].firstChild.style.setProperty("filter", "blur(" + j + "px)");
+              j -= 0.4
+            }
+          for (let i = lycCurrentIndex.value, j = 0, k = 0; i < lyricEle.value.length; i++) {
             lyricEle.value[i].style.transitionDelay = j + 's'
             j += 0.05
+            if(lyricBlur.value) {
+              lyricEle.value[i].firstChild.style.setProperty("filter", "blur(" + k + "px)");
+              k += 0.4
+            }
           }
         }
         for (let i = 0; i <= lycCurrentIndex.value; i++) {
@@ -296,10 +308,10 @@
       <div v-show="lyricsObjArr && lyricShow" class="lyric-area" ref="lyricScroll">
         <div class="lyric-scroll-area" ref="lyricScrollArea"></div>
         <div class="lyric-line" :style="{transform: 'translateY(' + lineOffset + 'Px)'}" v-for="(item, index) in getLyric" v-show="item.lyric">
-          <div class="line" @click="changeProgressLyc(item.time, index)" :class="{'line-highlight': index == lycCurrentIndex}">
-            <span class="roma" :class="{'original-inactive': !isLyricActive || item.active}" :style="{'font-size': rlyricSize + 'px'}" v-if="item.rlyric && lyricType.indexOf('roma') != -1">{{item.rlyric}}</span>
-            <span class="original" :class="{'original-inactive': !isLyricActive || item.active}" :style="{'font-size': lyricSize + 'px'}" v-if="lyricType.indexOf('original') != -1">{{item.lyric}}</span>
-            <span class="trans" :class="{'original-inactive': !isLyricActive || item.active}" :style="{'font-size': tlyricSize + 'px'}" v-if="item.tlyric && lyricType.indexOf('trans') != -1">{{item.tlyric}}</span>
+          <div class="line" @click="changeProgressLyc(item.time, index)" :class="{'line-highlight': index == lycCurrentIndex, 'lyric-inactive': !isLyricActive || item.active}">
+            <span class="roma" :style="{'font-size': rlyricSize + 'px'}" v-if="item.rlyric && lyricType.indexOf('roma') != -1">{{item.rlyric}}</span>
+            <span class="original" :style="{'font-size': lyricSize + 'px'}" v-if="lyricType.indexOf('original') != -1">{{item.lyric}}</span>
+            <span class="trans" :style="{'font-size': tlyricSize + 'px'}" v-if="item.tlyric && lyricType.indexOf('trans') != -1">{{item.tlyric}}</span>
             <div class="hilight" :class="{'hilight-active': index == lycCurrentIndex}"></div>
           </div>
           <div v-if="lycCurrentIndex != -1 && interludeIndex == index" class="music-interlude" :class="{'music-interlude-in': interludeAnimation}">
@@ -351,7 +363,7 @@
       width: calc(100% - 3vh);
       height: calc(100% - 3vh);
       overflow: hidden;
-      transition: 0.3s cubic-bezier(.3,.79,.55,.99);
+      transition: 0.3s cubic-bezier(.30,0,.12,1);
       .lyric-scroll-area{
         width: 100%;
         transition: 0.3s;
@@ -360,7 +372,7 @@
         margin-bottom: 10Px;
         width: 100%;
         text-align: left;
-        transition: 0.6s cubic-bezier(.3,.79,.55,.99);
+        transition: 0.55s cubic-bezier(.36,0,.12,1);
         .line{
           padding: 10Px 51Px 10Px 25Px;
           width: 100%;
@@ -371,13 +383,15 @@
           flex-direction: column;
           align-items: flex-start;
           transition-duration: 0.6s;
-          transition-timing-function: cubic-bezier(.3,.79,.55,.99);
+          transition-timing-function: cubic-bezier(.30,0,.12,1);
+          user-select: text;
           &:hover{
             cursor: pointer;
             background-color: rgba(0, 0, 0, 0.045);
           }
           &:active{
             transform: scale(0.9);
+            filter: blur(0) !important;
           }
           .original, .trans, .roma{
             font: 20Px SourceHanSansCN-Bold;
@@ -385,12 +399,7 @@
             color: black;
             text-align: left;
             display: inline-block;
-            filter: blur(1Px);
-            transition: 0.5s cubic-bezier(.3,.79,.55,.99);
-          }
-          .original-inactive{
-            transform: scale(1.05);
-            filter: blur(0);
+            transition: 0.5s cubic-bezier(.30,0,.12,1);
           }
           .hilight{
             width: 100%;
@@ -401,11 +410,17 @@
             top: 0;
             left: 0;
             transform: translateX(-101%);
-            transition: 0.5s cubic-bezier(.3,.79,.55,.99);
+            transition: 0.55s cubic-bezier(.30,0,.12,1);
           }
           .hilight-active{
             transform: translateX(0);
-            transition: 0.5s cubic-bezier(.3,.79,.55,.99);
+            transition: 0.6s cubic-bezier(.30,0,.12,1);
+          }
+        }
+        .lyric-inactive{
+          filter: blur(0) !important;
+          span{
+            transform: scale(1.05);
           }
         }
         .line-highlight{
@@ -415,7 +430,7 @@
             transform: scale(1.15) translateX(26px);
             color: white;
             filter: blur(0);
-            transition: 0.4s cubic-bezier(.3,.79,.55,.99);
+            transition: 0.4s cubic-bezier(.30,0,.12,1);
           }
         }
         .music-interlude{
@@ -438,7 +453,7 @@
               height: 28Px;
               border: 2Px solid black;
               transform: rotate(45deg);
-              animation: diamond-rotate 1.6s 0.6s cubic-bezier(.3,.79,.55,.99) infinite;
+              animation: diamond-rotate 1.6s 0.6s cubic-bezier(.30,0,.12,1) infinite;
               position: relative;
               @keyframes diamond-rotate {
                 0%{transform: rotate(45deg);}
@@ -509,12 +524,12 @@
           height: 80Px;
           opacity: 1;
           transform: scale(1);
-          transition: 0.8s cubic-bezier(.3,.79,.55,.99);
+          transition: 0.8s cubic-bezier(.30,0,.12,1);
         }
       }
     }
     .lyric-area-hidden{
-      transition: 0.2s cubic-bezier(.3,.79,.55,.99);
+      transition: 0.2s cubic-bezier(.30,0,.12,1);
       transform: scale(0.85);
       opacity: 0;
     }
@@ -546,7 +561,7 @@
         }
       }
       .tip{
-        font: 16Px Gilroy-ExtraBold;
+        font: 16Px Bender-Bold;
         color: black;
         white-space: nowrap;
         opacity: 0;

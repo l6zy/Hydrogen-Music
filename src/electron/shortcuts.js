@@ -5,10 +5,30 @@ module.exports = async function registerShortcuts(win) {
     const settingsStore = new Store({name: 'settings'});
     const shortcuts =  await settingsStore.get('settings.shortcuts');
     if(!shortcuts) return
+    else if(!(shortcuts.find(shortcut => shortcut.id == 'processForward') || shortcuts.find(shortcut => shortcut.id == 'processBack'))){
+        shortcuts.push({
+            id: 'processForward',
+            name: '快进(3s)',
+            shortcut: 'CommandOrControl+]',
+            globalShortcut: 'CommandOrControl+Alt+]',
+        },
+        {
+            id: 'processBack',
+            name: '后退(3s)',
+            shortcut: 'CommandOrControl+[',
+            globalShortcut: 'CommandOrControl+Alt+[',
+        })
+        settingsStore.set('settings.shortcuts', shortcuts);
+    }
     const menu = [
         {
             label: 'music',
             submenu: [
+                {
+                    role: 'playorpause',
+                    accelerator: 'Space',
+                    click: () => { win.webContents.send('music-playing-control') }
+                },
                 {
                     role: 'play',
                     accelerator: shortcuts.find(shortcut => shortcut.id == 'play').shortcut,
@@ -33,6 +53,16 @@ module.exports = async function registerShortcuts(win) {
                     role: 'volumeDown',
                     accelerator: shortcuts.find(shortcut => shortcut.id == 'volumeDown').shortcut,
                     click: () => { win.webContents.send('music-volume-down', 'volumeDown') }
+                },
+                {
+                    role: 'processForward',
+                    accelerator: shortcuts.find(shortcut => shortcut.id == 'processForward').shortcut,
+                    click: () => { win.webContents.send('music-process-control', 'forward') }
+                },
+                {
+                    role: 'processBack',
+                    accelerator: shortcuts.find(shortcut => shortcut.id == 'processBack').shortcut,
+                    click: () => { win.webContents.send('music-process-control', 'back') }
                 },
             ]
         },
@@ -68,8 +98,14 @@ module.exports = async function registerShortcuts(win) {
     globalShortcut.register(shortcuts.find(shortcut => shortcut.id == 'volumeDown').globalShortcut, () => {
         win.webContents.send('music-volume-down', 'volumeDown')
     })
+    globalShortcut.register(shortcuts.find(shortcut => shortcut.id == 'processForward').globalShortcut, () => {
+        win.webContents.send('music-process-control', 'forward')
+    })
+    globalShortcut.register(shortcuts.find(shortcut => shortcut.id == 'processBack').globalShortcut, () => {
+        win.webContents.send('music-process-control', 'back')
+    })
 
-    globalShortcut.register('shift+d', () => {
+    globalShortcut.register('CommandOrControl+Shift+F12', () => {
         // 获取当前窗口并打开控制台
         win.webContents.openDevTools({mode: 'detach'});
     });

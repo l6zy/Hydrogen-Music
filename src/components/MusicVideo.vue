@@ -414,7 +414,7 @@
                     <TransitionGroup name="list" tag="div">
                         <div class="time" v-for="(item, index) in timingList" :key="item">
                             <span @click="editTiming(item.start, item.videoTiming, (item.videoTiming + item.end - item.start))">M: {{formatTime(item.start)}} - {{formatTime(item.end)}}<br>V: {{formatTime(item.videoTiming)}} - {{formatTime(item.videoTiming + item.end - item.start)}}</span>
-                            <svg @click="deleteTiming(index)" t="1670569532229" class="item-delete" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2597" width="200" height="200" data-v-d79774b1=""><path d="M558.933333 529.066667l285.866667 285.866666-29.866667 29.866667-285.866666-285.866667-285.866667 285.866667-29.866667-29.866667 285.866667-285.866666L213.333333 243.2l29.866667-29.866667 285.866667 285.866667L814.933333 213.333333l29.866667 29.866667-285.866667 285.866667z" fill="#ffffff" p-id="2598" data-v-d79774b1=""></path></svg>
+                            <svg @click="deleteTiming(index)" v-if="!isDownloading" t="1670569532229" class="item-delete" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2597" width="200" height="200" data-v-d79774b1=""><path d="M558.933333 529.066667l285.866667 285.866666-29.866667 29.866667-285.866666-285.866667-285.866667 285.866667-29.866667-29.866667 285.866667-285.866666L213.333333 243.2l29.866667-29.866667 285.866667 285.866667L814.933333 213.333333l29.866667 29.866667-285.866667 285.866667z" fill="#ffffff" p-id="2598" data-v-d79774b1=""></path></svg>
                         </div>
                     </TransitionGroup>
                 </div>

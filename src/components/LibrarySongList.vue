@@ -105,8 +105,19 @@
     .library-song-list{
         height: 100%;
         overflow: auto;
-        &::-webkit-scrollbar{
+        &::-webkit-scrollbar {
+          width: 5px;
+          height: 10px;
+          background-color: rgba(0, 0, 0, 0);
+        }
+        &::-webkit-scrollbar-thumb {
+          background-color: rgba(0, 0, 0, 0.0);
+        }
+        &::-webkit-scrollbar-track {
           display: none;
+        }
+        &:hover::-webkit-scrollbar-thumb{
+          background-color: rgba(0, 0, 0, 0.04);
         }
         .list-item{
           padding: 12Px 8Px;
@@ -115,6 +126,7 @@
           justify-content: space-between;
           align-items: center;
           transition: 0.2s;
+          user-select: text;
           &:hover{
             background-color: rgba(0, 0, 0, 0.045);
           }

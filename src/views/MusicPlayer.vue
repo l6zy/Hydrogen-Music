@@ -42,11 +42,12 @@
     transition: 0.2s;
     .player-container{
       padding: 16Px 12Px;
+      padding-bottom: 4vh;
       width: 0;
       height: 0;
       background-color: rgba(255, 255, 255, 0.35);
       opacity: 0;
-      animation: player-in 0.8s 0.2s cubic-bezier(.14,.91,.58,1) forwards;
+      animation: player-in 0.75s 0.2s cubic-bezier(0.4, 0, 0.12, 1) forwards;
       @keyframes player-in {
           0%{height: 0;opacity: 0;}
           35%{width: 42vh;height: 0}
@@ -63,7 +64,7 @@
       }
     }
     .player-blur{
-      background-color: rgba(255, 255, 255, 0.25);
+      background-color: rgba(255, 255, 255, 0.2);
       backdrop-filter: blur(4px);
     }
     .lyric-container{

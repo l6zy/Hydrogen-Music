@@ -44,6 +44,7 @@
         justify-content: space-between;
         align-items: center;
         transition: 0.2s;
+        user-select: text;
         &:hover{
           cursor: pointer;
           background-color: rgba(0, 0, 0, 0.047);

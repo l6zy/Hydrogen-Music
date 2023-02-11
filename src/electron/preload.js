@@ -73,6 +73,9 @@ function volumeUp(callback) {
 function volumeDown(callback) {
     ipcRenderer.on('music-volume-down', callback)
 }
+function musicProcessControl(callback) {
+    ipcRenderer.on('music-process-control', callback)
+}
 function setSettings(settings) {
     ipcRenderer.send('set-settings', settings)
 }
@@ -91,8 +94,11 @@ function saveLastPlaylist(playlist) {
 function downloadVideoProgress(callback) {
     ipcRenderer.on('download-video-progress', callback)
 }
-function cancelDownloadMusicVideo(params) {
+function cancelDownloadMusicVideo() {
     ipcRenderer.send('cancel-download-music-video')
+}
+function copyTxt(txt) {
+    ipcRenderer.send('copy-txt', txt)
 }
 contextBridge.exposeInMainWorld('windowApi', {
     windowMin,
@@ -120,6 +126,7 @@ contextBridge.exposeInMainWorld('windowApi', {
     changeTrayMusicPlaymode,
     volumeUp,
     volumeDown,
+    musicProcessControl,
     setSettings,
     getSettings: () => ipcRenderer.invoke('get-settings'),
     openFile: () => ipcRenderer.invoke('dialog:openFile'),
@@ -135,4 +142,6 @@ contextBridge.exposeInMainWorld('windowApi', {
     musicVideoIsExists: (obj) => ipcRenderer.invoke('music-video-isexists', obj),
     clearUnusedVideo: (state) => ipcRenderer.invoke('clear-unused-video', state),
     deleteMusicVideo: (id) => ipcRenderer.invoke('delete-music-video', id),
+    getLocalMusicLyric: (filePath) => ipcRenderer.invoke('get-local-music-lyric', filePath),
+    copyTxt,
 })
