@@ -43,7 +43,15 @@ export const initSettings = () => {
         }
     })
 }
-
+export const getUserLikelist = () => {
+    if(userStore.user.userId)
+        getLikelist(userStore.user.userId).then(result => {
+            userStore.likelist = result.ids
+        })
+    else {
+        userStore.likelist = []
+    }
+}
 //初始化
 export const init = () => {
     initSettings()
@@ -51,13 +59,7 @@ export const init = () => {
     if(isLogin()) {
         getUserProfile().then(result => {
             updateUser(result.profile)
-            if(userStore.user.userId)
-                getLikelist(userStore.user.userId).then(result => {
-                    userStore.likelist = result.ids
-                })
-            else {
-                userStore.likelist = []
-            }
+            getUserLikelist()
         })
     } else {
         window.localStorage.clear()

@@ -188,6 +188,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: flex-start;
+            user-select: text;
             .music-name,.music-author{
                 text-align: left;
                 overflow: hidden;

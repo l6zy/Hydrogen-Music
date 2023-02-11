@@ -147,265 +147,295 @@
 
 <style scoped lang="scss">
   .player-container{
-      position: relative;
-      z-index: 99;
-      &:hover{
-          .song-control{
-              animation: song-control 0.1s forwards;
-              @keyframes song-control {
-                  10%{opacity: 0;}
-                  20%{opacity: 1;}
-                  30%{opacity: 1;}
-                  40%{opacity: 0;}
-                  50%{opacity: 0;}
-                  60%{opacity: 1;}
-                  70%{opacity: 1;}
-                  80%{opacity: 0;}
-                  90%{opacity: 0;}
-                  100%{opacity: 1;}
-              }
-              svg{
-                  transition: 0.2s;
-                  &:hover{
-                      cursor: pointer;
-                  }
-                  &:active{
-                      transform: scale(0.90);
-                  }
-              }
+    position: relative;
+    z-index: 99;
+    &:hover{
+      .song-control{
+        animation: song-control 0.1s forwards;
+        @keyframes song-control {
+          10%{opacity: 0;}
+          20%{opacity: 1;}
+          30%{opacity: 1;}
+          40%{opacity: 0;}
+          50%{opacity: 0;}
+          60%{opacity: 1;}
+          70%{opacity: 1;}
+          80%{opacity: 0;}
+          90%{opacity: 0;}
+          100%{opacity: 1;}
+        }
+        svg{
+            transition: 0.2s;
+            &:hover{
+              cursor: pointer;
+            }
+            &:active{
+              transform: scale(0.90);
+            }
           }
+        }
       }
     .player{
       width: 100%;
       height: 100%;
       transition: 0.2s;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
       .player-cover{
+        width: 100%;
+        transition: 0.2s cubic-bezier(.33,.88,.47,.94);
+        position: relative;
+        z-index: 99;
+        .cover{
+          padding: 1.5vh;
           width: 100%;
-          transition: 0.2s cubic-bezier(.33,.88,.47,.94);
-          position: relative;
-          z-index: 99;
-          .cover{
-            padding: 1.5vh;
+          opacity: 1;
+          transform: scale(1);
+          transition: 0.1s cubic-bezier(.3,.79,.55,.99);
+          img{
             width: 100%;
-            opacity: 1;
-            transform: scale(1);
-            transition: 0.1s cubic-bezier(.3,.79,.55,.99);
-            img{
-                width: 100%;
-                max-height: 38vh;
-                object-fit: cover;
-                vertical-align: bottom;
-                box-shadow: 0 0 8Px 0 rgba(0, 0, 0, 0.05);
+            max-height: 38vh;
+            object-fit: cover;
+            vertical-align: bottom;
+            box-shadow: 0 0 8Px 0 rgba(0, 0, 0, 0.05);
+            transform: scale(1.03);
+            animation: cover-in 0.3s 0.65s cubic-bezier(0.4, 0, 0.12, 1) forwards;
+            @keyframes cover-in {
+              0%{transform: scale(1.03);}
+              100%{transform: scale(1);}
             }
           }
-          .cover-change{
-            opacity: 0;
-            transform: scale(0.95);
-          }
-          .back-Video{
-            img{
-                transition: 0.2s;
-                &:hover{
-                    cursor: pointer;
-                    transform: scale(1.05);
-                }
+        }
+        .cover-change{
+          opacity: 0;
+          transform: scale(0.95);
+        }
+        .back-Video{
+          &:hover{
+              cursor: pointer;
+              transform: scale(1.05);
             }
+        }
+        $boderpx: 2 + Px;
+        .c-border{
+          width: 4vh;
+          height: 4vh;
+          position: absolute;
+        }
+        .c-border1{
+          top: 1vh;
+          left: 1vh;
+          border: {
+            top: $boderpx solid black;
+            left: $boderpx solid black;
+          };
+          animation: border1 0.3s 0.65s cubic-bezier(0.4, 0, 0.12, 1) forwards;
+          @keyframes border1 {
+            0%{top: 1vh;left: 1vh;}
+            100%{top: 0;left: 0;}
           }
-          $boderpx: 2 + Px;
-          .c-border{
-            width: 4vh;
-            height: 4vh;
-            position: absolute;
+        }
+        .c-border2{
+          top: 1vh;
+          right: 1vh;
+          border: {
+            top: $boderpx solid black;
+            right: $boderpx solid black;
+          };
+          animation: border2 0.2s 0.65s cubic-bezier(0.4, 0, 0.12, 1) forwards;
+          @keyframes border2 {
+            0%{top: 1vh;right: 1vh;}
+            100%{top: 0;right: 0;}
           }
-          .c-border1{
-            top: 0;
-            left: 0;
-            border: {
-                top: $boderpx solid black;
-                left: $boderpx solid black;
-            };
+        }
+        .c-border3{
+          bottom: 1vh;
+          right: 1vh;
+          border: {
+            bottom: $boderpx solid black;
+            right: $boderpx solid black;
+          };
+          animation: border3 0.3s 0.65s cubic-bezier(0.4, 0, 0.12, 1) forwards;
+          @keyframes border3 {
+            0%{bottom: 1vh;right: 1vh;}
+            100%{bottom: 0;right: 0;}
           }
-          .c-border2{
-            top: 0;
-            right: 0;
-            border: {
-                top: $boderpx solid black;
-                right: $boderpx solid black;
-            };
+        }
+        .c-border4{
+          bottom: 1vh;
+          left: 1vh;
+          border: {
+            bottom: $boderpx solid black;
+            left: $boderpx solid black;
+          };
+          animation: border4 0.3s 0.65s cubic-bezier(0.4, 0, 0.12, 1) forwards;
+          @keyframes border4 {
+            0%{bottom: 1vh;left: 1vh;}
+            100%{bottom: 0;left: 0;}
           }
-          .c-border3{
-            bottom: 0;
-            right: 0;
-            border: {
-                bottom: $boderpx solid black;
-                right: $boderpx solid black;
-            };
-          }
-          .c-border4{
-            bottom: 0;
-            left: 0;
-            border: {
-                bottom: $boderpx solid black;
-                left: $boderpx solid black;
-            };
-          }
+        }
       }
       .player-info{
         margin-top: 1vh;
         padding: 1.5vh;
         width: 100%;
         .info-music{
-            width: 100%;
-            display: flex;
-            flex-direction: row;
-            justify-content: flex-start;
-            align-items: center;
-            text-align: left;
-            white-space: nowrap;
-            position: relative;
-            &:first-child{
-                padding-bottom: 2vh;
-                overflow: hidden;
-            }
-            .music-name-lable,.music-author-lable{
-                position: absolute;
-            }
-            .music-name,.music-author{
-                margin-left: 10Px;
-                width: 100%;
-                font-family: SourceHanSansCN-Bold;
-                overflow: auto;
-                &::-webkit-scrollbar{
-                    display: none;
-                }
-            }
-            .music-name-lable{
-                width: 100%;
-                height: 24Px;
-                background-color: black;
-                transition: 0.3s cubic-bezier(.22,.89,.58,.99);
-                transform: translateX(calc(-100% + 5Px));
-            }
-            .music-name-lable-in{
-                transform: translateX(0);
-            }
-            .music-name{
-                font-family: Source Han Sans;
-                font-weight: bold;
-                font-size: 20Px;
-                color: black;
-            }
-            .music-name-in{
-                opacity: 0;
-            }
-            .music-author-lable{
-                width: 8Px;
-                height: 8Px;
-                border: 0.5Px solid rgb(105, 105, 105);
-                position: absolute;
-                top: 1Px;
-                left: -2Px;
-                &::after{
-                    content: '';
-                    width: 4Px;
-                    height: 4Px;
-                    background-color: rgb(105, 105, 105);
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%,-50%);
-                }
-              }
-              .music-author{
-                font-size: 10Px;
-                color: rgb(105, 105, 105);
-                .author{
-                    transition: 0.2s;
-                    &:hover{
-                        cursor: pointer;
-                        color: black;
-                    }
-                }
-              }
+          width: 100%;
+          display: flex;
+          flex-direction: row;
+          justify-content: flex-start;
+          align-items: center;
+          text-align: left;
+          white-space: nowrap;
+          position: relative;
+          &:first-child{
+            padding-bottom: 2vh;
+            overflow: hidden;
           }
+          .music-name-lable,.music-author-lable{
+            position: absolute;
+          }
+          .music-name,.music-author{
+            margin-left: 10Px;
+            width: 100%;
+            font-family: SourceHanSansCN-Bold;
+            overflow: auto;
+            user-select: text;
+            &::-webkit-scrollbar{
+                display: none;
+            }
+          }
+          .music-name{
+            margin-left: 1.5vh;
+          }
+          .music-name-lable{
+            width: 100%;
+            height: 2.9vh;
+            background-color: black;
+            transition: 0.3s cubic-bezier(.22,.89,.58,.99);
+            transform: translateX(calc(-100% + 5Px));
+          }
+          .music-name-lable-in{
+            transform: translateX(0);
+          }
+          .music-name{
+            font-family: SourceHanSansCN-Bold;
+            font-weight: bold;
+            font-size: 2.4vh;
+            color: black;
+          }
+          .music-name-in{
+            opacity: 0;
+          }
+          .music-author-lable{
+            width: 8Px;
+            height: 8Px;
+            border: 0.5Px solid rgb(105, 105, 105);
+            position: absolute;
+            top: 1Px;
+            left: -2Px;
+            &::after{
+              content: '';
+              width: 4Px;
+              height: 4Px;
+              background-color: rgb(105, 105, 105);
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%,-50%);
+            }
+            }
+            .music-author{
+              font-size: 10Px;
+              color: rgb(105, 105, 105);
+              .author{
+                  transition: 0.2s;
+                  &:hover{
+                    cursor: pointer;
+                    color: black;
+                  }
+              }
+            }
+        }
       }
       .player-control{
         padding: 1.5vh;
-        height: 30%;
+        height: 32%;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         .player-process{
-            .process-time{
-                display: flex;
-                flex-direction: row;
-                justify-content: space-between;
-                align-items: center;
-                font: 1.5vh Bender-Bold;
-                color: black;
-            }
-            .process{
-                width: 100%;
-                height: 1.3vh;
-                position: relative;
-                .music-progress{
-                    width: 100% !important;
-                    height: 1.3vh !important;
-                    box-shadow: 0 0 0 0.5Px black;
-                    transition: 0.2s;
-                }
-            }
-          }
-          .control{
-            // margin: 2vh 0;
+          .process-time{
             display: flex;
             flex-direction: row;
-            justify-content: space-evenly;
+            justify-content: space-between;
             align-items: center;
-            svg{
-                width: 5vh;
-                height: 5vh;
+            font: 1.5vh Bender-Bold;
+            color: black;
+          }
+          .process{
+              width: 100%;
+              height: 1.3vh;
+              position: relative;
+              .music-progress{
+                width: 100% !important;
+                height: 1.3vh !important;
+                box-shadow: 0 0 0 0.5Px black;
                 transition: 0.2s;
-                &:hover{
-                    cursor: pointer;
-                }
-                &:active{
-                    transform: scale(0.90);
-                }
+              }
+          }
+        }
+        .control{
+          // margin: 2vh 0;
+          display: flex;
+          flex-direction: row;
+          justify-content: space-evenly;
+          align-items: center;
+          svg{
+            width: 5vh;
+            height: 5vh;
+            transition: 0.2s;
+            &:hover{
+                cursor: pointer;
+            }
+            &:active{
+                transform: scale(0.90);
             }
           }
-          .player-voluem{
-            .voluem{
-                width: 100%;
-                height: 1.3vh;
-                position: relative;
-                .volume-slider{
-                    height: 1.3vh !important;
-                    box-shadow: 0 0 0 0.5Px black !important;
-                }
-                .voluem-outline{
-                    width: 100%;
-                    height: 100%;
-                    border: 1Px solid black;
-                    position: absolute;
-                }
-                .voluem-content{
-                    width: 46%;
-                    height: 100%;
-                    background-color: black;
-                    position: absolute;
-                }
-              }
-              .voluem-num{
-                display: flex;
-                flex-direction: row;
-                justify-content: space-between;
-                align-items: center;
-                font: 1.5vh Bender-Bold;
-                color: black;
-              }
+        }
+        .player-voluem{
+          .voluem{
+            width: 100%;
+            height: 1.3vh;
+            position: relative;
+            .volume-slider{
+              height: 1.3vh !important;
+              box-shadow: 0 0 0 0.5Px black !important;
+            }
+            .voluem-outline{
+              width: 100%;
+              height: 100%;
+              border: 1Px solid black;
+              position: absolute;
+            }
+            .voluem-content{
+              width: 46%;
+              height: 100%;
+              background-color: black;
+              position: absolute;
+            }
           }
+          .voluem-num{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            font: 1.5vh Bender-Bold;
+            color: black;
+          }
+        }
       }
       .song-control{
         width: 50Px;
@@ -417,44 +447,43 @@
         right: -50Px;
         opacity: 0;
         svg{
-            margin-top: 3vh;
-            width: 2.5vh;
-            height: 2.5vh;
+          margin-top: 3vh;
+          width: 2.5vh;
+          height: 2.5vh;
         }
       }
-  }
-  .playlist-widget-player{
-    position: absolute;
-    right: -370Px;
-    bottom: 0;
-  }
-  .playlist-widget-open{
-    height: 450Px;
-  }
-  $boderPosition: -0.75 + vh;
-      .border{
-        width: 1.5vh;
-        height: 1.5vh;
-        background-color: black;
-        position: absolute;
-        z-index: 100;
-      }
-      .border1{
-        top: $boderPosition;
-        left: $boderPosition;
-      }
-      .border2{
-        top: $boderPosition;
-        right: $boderPosition;
-  
-      }
-      .border3{
-        bottom: $boderPosition;
-        right: $boderPosition;
-      }
-      .border4{
-        bottom: $boderPosition;
-        left: $boderPosition;
-      }
+    }
+    .playlist-widget-player{
+      position: absolute;
+      right: -370Px;
+      bottom: 0;
+    }
+    .playlist-widget-open{
+      height: 450Px;
+    }
+    $boderPosition: -0.75 + vh;
+    .border{
+      width: 1.5vh;
+      height: 1.5vh;
+      background-color: black;
+      position: absolute;
+      z-index: 100;
+    }
+    .border1{
+      top: $boderPosition;
+      left: $boderPosition;
+    }
+    .border2{
+      top: $boderPosition;
+      right: $boderPosition;
+    }
+    .border3{
+      bottom: $boderPosition;
+      right: $boderPosition;
+    }
+    .border4{
+      bottom: $boderPosition;
+      left: $boderPosition;
+    }
   }
 </style>
