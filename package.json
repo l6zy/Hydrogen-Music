@@ -70,7 +70,7 @@
     "linux": {},
     "publish": [
       {
-        "provider": "github",
+        "provider": "github -p always",
         "owner": "Kaidesuyo",
         "repo": "Hydrogen-Music",
         "releaseType": "draft"
