@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.2.0",
   "main": "background.js",
-  "author": "1208875929@qq.com",
+  "author": "Kaidesuyo",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -15,6 +15,7 @@
     "axios": "^1.2.0",
     "dayjs": "^1.11.6",
     "electron-store": "^8.1.0",
+    "electron-updater": "^5.3.0",
     "electron-win-state": "^1.1.22",
     "fs-extra": "^11.1.0",
     "howler": "^2.2.3",
@@ -61,10 +62,20 @@
       "target": [
         {
           "target": "nsis",
-          "arch": []
+          "arch": ["x64"]
         }
-      ]
+      ],
+      "verifyUpdateCodeSignature": false
     },
-    "linux": {}
+    "linux": {},
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "Kaidesuyo",
+        "repo": "Hydrogen-Music",
+        "releaseType": "draft"
+      }
+    ]
+    
   }
 }
