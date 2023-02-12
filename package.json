@@ -9,7 +9,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "start": "nodemon --exec electron . --watch ./ --ext .html",
-    "dist": "vite build && electron-builder"
+    "dist": "vite build && electron-builder -p always"
   },
   "dependencies": {
     "axios": "^1.2.0",
@@ -70,7 +70,7 @@
     "linux": {},
     "publish": [
       {
-        "provider": "github -p always",
+        "provider": "github",
         "owner": "Kaidesuyo",
         "repo": "Hydrogen-Music",
         "releaseType": "draft"
