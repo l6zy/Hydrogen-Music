@@ -7,6 +7,7 @@ const registerShortcuts = require('./src/electron/shortcuts')
 
 const { app, BrowserWindow, globalShortcut } = require('electron')
 const Winstate = require('electron-win-state').default
+const { autoUpdater } = require("electron-updater");
 const path = require('path')
 const Store = require('electron-store');
 const settingsStore = new Store({name: 'settings'});
@@ -56,6 +57,7 @@ const createWindow = () => {
         frame: false,
         title: "Hydrogen Music",
         icon: path.resolve(__dirname, './src/assets/icon/icon.ico'),
+        backgroundColor: '#fff',
         //记录窗口大小
         ...winstate.winOptions,
         show: false,
@@ -72,7 +74,13 @@ const createWindow = () => {
         win.loadFile(indexHtml)
     win.once('ready-to-show', () => {
         win.show()
-        // BrowserWindow.getFocusedWindow().webContents.openDevTools({mode: 'detach'});
+        if(process.resourcesPath.indexOf('\\node_modules\\') == -1) {
+            autoUpdater.autoDownload = false
+            autoUpdater.on('update-available', info => {
+                win.webContents.send('check-update', info.version)
+            });
+            autoUpdater.checkForUpdatesAndNotify()
+        }
     })
     winstate.manage(win)
     win.on('close', async (event) => {

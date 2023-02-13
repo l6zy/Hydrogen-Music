@@ -1,19 +1,12 @@
 <script setup>
-  import { ref } from 'vue'
   import { useRouter } from 'vue-router'
-  import { useLocalStore } from '../store/localStore';
   const router = useRouter()
-  const localStore = useLocalStore()
   const props = defineProps(['classifyData'])
-  async function getImgBase64(item) {
-    return await windowApi.getLocalMusicImage(item.songs[0].common.fileUrl)
-  }
 
   const showFiles = (item) => {
     if(item.type == 'album') router.push('/mymusic/local/album/' + item.id)
     if(item.type == 'artist') router.push('/mymusic/local/artist/' + item.id)
   }
-
 </script>
 
 <template>
@@ -35,6 +28,22 @@
 
 <style scoped lang="scss">
   .classify-list{
+    height: 100%;
+    overflow: auto;
+    &::-webkit-scrollbar {
+      width: 5px;
+      height: 10px;
+      background-color: rgba(0, 0, 0, 0);
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(0, 0, 0, 0.0);
+    }
+    &::-webkit-scrollbar-track {
+      display: none;
+    }
+    &:hover::-webkit-scrollbar-thumb{
+      background-color: rgba(0, 0, 0, 0.04);
+    }
     .list-item{
         padding: 8Px;
         display: flex;
@@ -62,7 +71,6 @@
           padding: 5Px;
           width: 50Px;
           height: 50Px;
-        //   border: 0.5Px solid rgb(233, 233, 233);
           img{
             width: 100%;
             height: 100%;
@@ -110,8 +118,8 @@
         }
     }
     .list-item:last-child{
-        margin-bottom: 15Px;
-      }
+      margin-bottom: 15Px;
+    }
     .list-item-selected{
       &::after{
         left: 0;

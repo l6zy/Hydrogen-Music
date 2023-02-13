@@ -16,7 +16,11 @@
 
   const playerStore = usePlayerStore()
   const otherStore = useOtherStore()
-  
+
+  windowApi.checkUpdate((event, version) => {
+    otherStore.toUpdate = true
+    otherStore.newVersion = version
+  })
 </script>
 
 <template>
@@ -56,7 +60,11 @@
   <div class="globalNotice">
     <GlobalNotice></GlobalNotice>
   </div>
-  <Update></Update>
+  <Transition name="fade">
+    <div class="update" v-if="otherStore.toUpdate">
+      <Update></Update>
+    </div>
+  </Transition>
 </template>
 
 <style lang="scss">
@@ -79,15 +87,15 @@
     width: 100%;
     height: 100%;
     background: linear-gradient(rgba(176, 209, 217, 0.9) -20%,rgba(176, 209, 217, 0.4) 50%,rgba(176, 209, 217, 0.9) 120%);
-    animation: mainWindows-starting 0.6s cubic-bezier(.37,1,.66,1) forwards;
+    opacity: 0;
+    animation: mainWindows-starting 0.8s cubic-bezier(.14,.91,.58,1) forwards;
+    @keyframes mainWindows-starting {
+      0%{background-color: rgba(222, 235, 239, 1);opacity: 0;transform: scale(1.3);}
+      100%{background-color: rgb(255, 255, 255);opacity: 1;transform: scale(1);}
+    }
     .home{
       height: calc(100% - 78Px);
     }
-  }
-  @keyframes mainWindows-starting {
-      0%{width: 0;height: 0;background-color: rgba(222, 235, 239, 1);opacity: 0;}
-      80%{opacity: 1;}
-      100%{width: 100%;height: 100%;background-color: rgba(255, 255, 255, 1);}
   }
   .globalWidget{
     display: flex;
@@ -150,6 +158,13 @@
     position: fixed;
     z-index: 999;
   }
+  .update{
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.1);
+    position: fixed;
+    z-index: 999;
+  }
 
   .home-enter-active,
   .home-leave-active {
@@ -189,6 +204,17 @@
   .video-enter-from,
   .video-leave-to {
     transform: scale(0.8);
+    opacity: 0;
+  }
+  .fade-enter-active {
+    transition: 0.4s;
+  }
+  .fade-leave-active {
+    transition: 0.3s;
+  }
+
+  .fade-enter-from,
+  .fade-leave-to {
     opacity: 0;
   }
 </style>

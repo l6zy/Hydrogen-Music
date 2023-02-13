@@ -47,7 +47,7 @@
       height: 0;
       background-color: rgba(255, 255, 255, 0.35);
       opacity: 0;
-      animation: player-in 0.75s 0.2s cubic-bezier(0.4, 0, 0.12, 1) forwards;
+      animation: player-in 0.7s 0.2s cubic-bezier(0.4, 0, 0.12, 1) forwards;
       @keyframes player-in {
           0%{height: 0;opacity: 0;}
           35%{width: 42vh;height: 0}

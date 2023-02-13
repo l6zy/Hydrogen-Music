@@ -405,7 +405,7 @@
             <div class="app-icon">
                 <img src="../assets/icon/icon.ico" alt="">
             </div>
-            <div class="version">V0.2.0</div>
+            <div class="version">V0.3.0</div>
             <div class="app-author" @click="toGithub()">Author: Kaidesuyo</div>
         </div>
     </div>
@@ -562,6 +562,7 @@
                             width: 200px;
                             padding: 5px 10px;
                             background-color: rgba(255, 255, 255, 0.35);
+                            color: black;
                             border: none;
                             outline: none;
                             appearance:none;

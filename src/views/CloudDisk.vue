@@ -85,7 +85,7 @@
 </script>
 
 <template>
-  <div class="cloud-disk">
+  <div class="cloud-disk" v-if=userStore.cloudDiskPage>
     <div class="disk-left">
       <div class="disk-title">
         <div class="title-tip"></div>
@@ -159,7 +159,8 @@
               </div>
               <div class="info-item">
                 <div class="item-lable">上次添加</div>
-                <div class="item-info">{{addTime(cloudSongs[0].addTime)}}</div>
+                <div class="item-info" v-if=cloudSongs[0]>{{addTime(cloudSongs[0].addTime)}}</div>
+                <div class="item-info" v-else>NONE</div>
               </div>
             </div>
             <div class="info-footer">

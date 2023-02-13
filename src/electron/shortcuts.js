@@ -30,7 +30,12 @@ module.exports = async function registerShortcuts(win) {
                     click: () => { win.webContents.send('music-playing-control') }
                 },
                 {
-                    role: 'play',
+                    role: 'playorpause',
+                    accelerator: 'F5',
+                    click: () => { win.webContents.send('music-playing-control') }
+                },
+                {
+                    role: 'playorpause',
                     accelerator: shortcuts.find(shortcut => shortcut.id == 'play').shortcut,
                     click: () => { win.webContents.send('music-playing-control') }
                 },
@@ -63,6 +68,11 @@ module.exports = async function registerShortcuts(win) {
                     role: 'processBack',
                     accelerator: shortcuts.find(shortcut => shortcut.id == 'processBack').shortcut,
                     click: () => { win.webContents.send('music-process-control', 'back') }
+                },
+                {
+                    role: 'hidePlayer',
+                    accelerator: 'Escape',
+                    click: () => { win.webContents.send('hide-player') }
                 },
             ]
         },

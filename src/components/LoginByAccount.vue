@@ -32,7 +32,7 @@
   defineExpose({inputFocus})
 
   const checkMail = () => {
-    const emailReg = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
+    const emailReg = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(.[a-zA-Z0-9_-]+)+$/
     if(countrycode.value === '' || accountNumber.value === '' || typePassword.value === '') {
       noticeOpen("请输入正确的邮箱或密码！", 2)
       return false

@@ -30,10 +30,9 @@
         background-color: rgb(23, 23, 23);
         position: relative;
         overflow: hidden;
-        animation: notice-in 0.2s cubic-bezier(0.3, 0.79, 0.55, 0.99) forwards;
+        animation: notice-in 0.18s cubic-bezier(0.3, 0.79, 0.55, 0.99) forwards;
         @keyframes notice-in {
             0%{width: 0;transform: scale(0.9);}
-            80%{transform: scale(1);}
             100%{width: 300Px;padding: 3Px 30Px;transform: scale(1);}
         }
         .notic-text{

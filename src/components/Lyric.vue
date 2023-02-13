@@ -5,7 +5,7 @@
   import { storeToRefs } from 'pinia'
 
   const playerStore = usePlayerStore()
-  const { playing, progress, lyric, lyricsObjArr, songList, currentIndex, currentMusic, widgetState, lyricShow, lyricEle, isLyricDelay, lyricSize, tlyricSize, rlyricSize, lyricType, playerChangeSong, lyricInterludeTime, lyricBlur, playerShow } = storeToRefs(playerStore)
+  const { playing, progress, lyric, lyricsObjArr, songList, currentIndex, currentMusic, widgetState, lyricShow, lyricEle, isLyricDelay, lyricSize, tlyricSize, rlyricSize, lyricType, playerChangeSong, lyricInterludeTime, lyricBlur, playerShow, videoIsPlaying } = storeToRefs(playerStore)
 
   const lyricScroll = ref()
   const lyricScrollArea = ref()
@@ -26,6 +26,8 @@
   let initMax = null
   let initOffset = null
   let size = null
+
+  let lyricLastPosition = null
 
   const regNewLine = /\n/
   const regTime = /\[\d{2}:\d{2}.\d{2,3}\]/
@@ -66,7 +68,7 @@
       if(!lyctime) continue
       obj.lyric = arr[i].split(']')[1].trim() === '' ? '' : arr[i].split(']')[1].trim()
       if(!obj.lyric) continue
-      if(obj.lyric.indexOf('纯音乐') != -1 || obj.time > 5000) {
+      if(obj.lyric.indexOf('纯音乐') != -1 || obj.time > 4500) {
         lyricArr = [{lyric: "纯音乐，请欣赏", time: 0}, {lyric: "", time: Math.trunc(songList.value[currentIndex.value].dt / 1000)}]
         return lyricArr
       }
@@ -95,7 +97,12 @@
       obj.time = lyctime ? formatLyricTime(lyctime[0].slice(1, lyctime[0].length - 1)) : 0
       if (!(obj.lyric === '')) lyricArr.push(obj)
     }
-    return lyricArr
+    function sortBy (field) {
+      return (x, y) => {
+        return x[field] - y[field]
+      }
+    }
+    return lyricArr.sort(sortBy('time'))
   }
 
   const getLyric = computed(() => {
@@ -125,17 +132,18 @@
       return lyricsObjArr.value
     }
   })  
-  const clearLycAnimation = () => {
-    isLyricDelay.value = false
+  const clearLycAnimation = (flag) => {
+    if(flag) isLyricDelay.value = false
     for (let i = 0; i < lyricEle.value.length; i++) {
       lyricEle.value[i].style.transitionDelay = 0 + 's'
-      lyricEle.value[i].firstChild.style.setProperty("filter", "blur(0px)");
+      if(lyricBlur.value) lyricEle.value[i].firstChild.style.setProperty("filter", "blur(0px)");
     }
-    isLyricDelay.value = true
-    // const forbidDelayTimer =  setTimeout(() => {
-    //     isLyricDelay.value = true
-    //     clearTimeout(forbidDelayTimer)
-    // }, 600);
+    if(flag) {
+      const forbidDelayTimer =  setTimeout(() => {
+          isLyricDelay.value = true
+          clearTimeout(forbidDelayTimer)
+      }, 500);
+    }
   }
   const setMaxHeight = (change) => {
     if(!lyricsObjArr.value) return
@@ -153,7 +161,6 @@
     }
     if(lyricScrollArea.value)
       lyricScrollArea.value.style.height = initMax + 'Px'
-    clearLycAnimation()
   }
   const setDefaultStyle = () => {
     lyric.value = null
@@ -247,7 +254,6 @@
   }
   const changeProgressLyc = (time, index) => {
     lyricScrollArea.value.style.height = initMax + 'Px'
-    clearLycAnimation()
     if(!playing.value) {
       lycCurrentIndex.value = index
       let offset = (lycCurrentIndex.value + 1) * size
@@ -260,9 +266,15 @@
   }
   watch(() => [widgetState.value, playing.value, lyricShow.value, lyricsObjArr.value], () => {
     if(!widgetState.value && playing.value && lyricShow.value && lyricsObjArr.value) {
+      if(lyricLastPosition && progress.value < lyricLastPosition - 4) {
+        clearLycAnimation(true)
+        lyricLastPosition = null
+      } else 
+        clearLycAnimation(false)
       setLyricActive()
     } else {
       clearInterval(lyricInterval.value)
+      lyricLastPosition = progress.value
     }
     if(lyricShow.value && lyricsObjArr.value && lyricEle.value) {
       for (let i = 0; i < lyricEle.value.length; i++) {
@@ -274,10 +286,10 @@
     lyricShow.value = false
     if(!lyricShow.value && !widgetState.value) {
       const changeTimer = setTimeout(() => {
-        setMaxHeight(true)
         lyricShow.value = true
+        setMaxHeight(true)
         clearTimeout(changeTimer)
-      }, 600);
+      }, 500);
     }
   }, {deep: true})
   onMounted(() => {
@@ -305,14 +317,14 @@
 <template>
   <div class="lyric-container">
     <Transition name="fade">
-      <div v-show="lyricsObjArr && lyricShow" class="lyric-area" ref="lyricScroll">
+      <div v-show="lyricsObjArr && lyricShow && lyricType.indexOf('original') != -1" class="lyric-area" ref="lyricScroll">
         <div class="lyric-scroll-area" ref="lyricScrollArea"></div>
         <div class="lyric-line" :style="{transform: 'translateY(' + lineOffset + 'Px)'}" v-for="(item, index) in getLyric" v-show="item.lyric">
           <div class="line" @click="changeProgressLyc(item.time, index)" :class="{'line-highlight': index == lycCurrentIndex, 'lyric-inactive': !isLyricActive || item.active}">
             <span class="roma" :style="{'font-size': rlyricSize + 'px'}" v-if="item.rlyric && lyricType.indexOf('roma') != -1">{{item.rlyric}}</span>
             <span class="original" :style="{'font-size': lyricSize + 'px'}" v-if="lyricType.indexOf('original') != -1">{{item.lyric}}</span>
             <span class="trans" :style="{'font-size': tlyricSize + 'px'}" v-if="item.tlyric && lyricType.indexOf('trans') != -1">{{item.tlyric}}</span>
-            <div class="hilight" :class="{'hilight-active': index == lycCurrentIndex}"></div>
+            <div class="hilight" :class="{'hilight-active': index == lycCurrentIndex}" :style="{backgroundColor: videoIsPlaying ? 'rgba(0, 0, 0, 0.8)' : 'black'}"></div>
           </div>
           <div v-if="lycCurrentIndex != -1 && interludeIndex == index" class="music-interlude" :class="{'music-interlude-in': interludeAnimation}">
             <div class="interlude-left">
@@ -336,7 +348,7 @@
       </div>
     </Transition>
     <Transition name="fade">
-      <div v-show="!lyricsObjArr" class="lyric-nodata">
+      <div v-show="!lyricsObjArr || lyricType.indexOf('original') == -1" class="lyric-nodata">
           <div class="line1"></div>
           <span class="tip">Lyric-Area</span>
           <div class="line2"></div>
@@ -372,9 +384,9 @@
         margin-bottom: 10Px;
         width: 100%;
         text-align: left;
-        transition: 0.55s cubic-bezier(.36,0,.12,1);
+        transition: 0.58s cubic-bezier(.4,0,.12,1);
         .line{
-          padding: 10Px 51Px 10Px 25Px;
+          padding: 10Px 130Px 10Px 25Px;
           width: 100%;
           height: 100%;
           position: relative;
@@ -414,7 +426,7 @@
           }
           .hilight-active{
             transform: translateX(0);
-            transition: 0.6s cubic-bezier(.30,0,.12,1);
+            transition: 0.62s cubic-bezier(.30,0,.12,1);
           }
         }
         .lyric-inactive{
@@ -429,7 +441,6 @@
             transform-origin: left center;
             transform: scale(1.15) translateX(26px);
             color: white;
-            filter: blur(0);
             transition: 0.4s cubic-bezier(.30,0,.12,1);
           }
         }
@@ -633,10 +644,10 @@
     }
   }
   .fade-enter-active{
-    transition: 0.3s cubic-bezier(.3,.79,.55,.99);
+    transition: 0.4s cubic-bezier(.3,.79,.55,.99) !important;
   }
   .fade-leave-active {
-    transition: 0.2s cubic-bezier(.3,.79,.55,.99);
+    transition: 0.2s cubic-bezier(.3,.79,.55,.99) !important;
   }
   .fade-enter-from,
   .fade-leave-to {

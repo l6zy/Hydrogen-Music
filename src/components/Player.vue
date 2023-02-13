@@ -80,9 +80,9 @@
                 <span class="music-name" :class="{'music-name-in': playerChangeSong}">{{songList[currentIndex].name || songList[currentIndex].localName}}</span>
             </div>
             <div class="info-music">
-                <div class="music-author-lable"></div>
+                <div class="music-author-lable" :class="{'music-author-lable-video': videoIsPlaying}"></div>
                 <div class="music-author">
-                    <span @click="checkArtist(singer.id)" class="author" v-for="(singer, index) in songList[currentIndex].ar">{{singer.name || ''}}{{index == songList[currentIndex].ar.length -1 ? '' : ' / '}}</span>
+                    <span @click="checkArtist(singer.id)" class="author" :style="{color: videoIsPlaying ? 'black' : 'rgb(105, 105, 105)'}" v-for="(singer, index) in songList[currentIndex].ar">{{singer.name || ''}}{{index == songList[currentIndex].ar.length -1 ? '' : ' / '}}</span>
                 </div>
             </div>
         </div>
@@ -346,18 +346,24 @@
               left: 50%;
               transform: translate(-50%,-50%);
             }
+          }
+          .music-author-lable-video{
+            border: 0.5Px solid rgb(0, 0, 0);
+            &::after{
+              background-color: rgb(0, 0, 0);
             }
-            .music-author{
-              font-size: 10Px;
-              color: rgb(105, 105, 105);
-              .author{
-                  transition: 0.2s;
-                  &:hover{
-                    cursor: pointer;
-                    color: black;
-                  }
-              }
+          }
+          .music-author{
+            font-size: 10Px;
+            color: rgb(105, 105, 105);
+            .author{
+                transition: 0.2s;
+                &:hover{
+                  cursor: pointer;
+                  color: black !important;
+                }
             }
+          }
         }
       }
       .player-control{

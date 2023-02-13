@@ -16,7 +16,7 @@ const userStore = useUserStore()
 const libraryStore = useLibraryStore(pinia)
 const playerStore = usePlayerStore(pinia)
 const { libraryInfo } = storeToRefs(libraryStore)
-const { currentMusic, playing, progress, volume, quality, playMode, songList, shuffledList, shuffleIndex, listInfo, songId, currentIndex, time, playlistWidgetShow, playerChangeSong, lyric, lyricsObjArr, lyricShow, lyricEle, isLyricDelay, widgetState, localBase64Img, musicVideo, currentMusicVideo, musicVideoDOM, videoIsPlaying, playerShow} = storeToRefs(playerStore)
+const { currentMusic, playing, progress, volume, quality, playMode, songList, shuffledList, shuffleIndex, listInfo, songId, currentIndex, time, playlistWidgetShow, playerChangeSong, lyric, lyricsObjArr, lyricShow, lyricEle, isLyricDelay, widgetState, localBase64Img, musicVideo, currentMusicVideo, musicVideoDOM, videoIsPlaying, playerShow, lyricBlur} = storeToRefs(playerStore)
 
 let isProgress = false
 let musicProgress = null
@@ -70,6 +70,7 @@ export function play(url, autoplay) {
             currentMusic.value.seek(progress.value)
             loadLast = false
         }
+        playerChangeSong.value = false
     })
     currentMusic.value.on('play', () => {
         currentMusic.value.fade(0,volume.value,200)
@@ -187,7 +188,6 @@ export function loadMusicVideo(id) {
     })
 }
 
-//用来中转，渐隐音量
 export function addSong(id, index, autoplay, isLocal) {
     progress.value = 0
     if(lyricShow.value) {
@@ -229,6 +229,7 @@ export async function getLocalLyric(filePath) {
     else return false
 }
 export async function getSongUrl(id, index, autoplay, isLocal) {
+    windowApi.setWindowTile(songList.value[index].name + " - " + songList.value[index].ar[0].name)
     if(isLocal) {
         windowApi.getLocalMusicImage(songList.value[currentIndex.value].url).then(base64 => {
             localBase64Img.value = base64
@@ -236,6 +237,7 @@ export async function getSongUrl(id, index, autoplay, isLocal) {
         play(songList.value[currentIndex.value].url, autoplay)
         lyric.value = null
         lyricsObjArr.value = null
+        //获取本地歌词（已禁用）
         // const localLyric = await getLocalLyric(songList.value[currentIndex.value].url)
         // if(localLyric) {
         //     lyric.value = {lrc:{lyric:localLyric}}
@@ -347,7 +349,7 @@ const clearLycAnimation = () => {
     isLyricDelay.value = false
     for (let i = 0; i < lyricEle.value.length; i++) {
       lyricEle.value[i].style.transitionDelay = 0 + 's'
-      lyricEle.value[i].firstChild.style.setProperty("filter", "blur(0)");
+      if(lyricBlur.value) lyricEle.value[i].firstChild.style.setProperty("filter", "blur(0)");
     }
     const forbidDelayTimer =  setTimeout(() => {
         isLyricDelay.value = true
@@ -449,7 +451,7 @@ export function addToNext(nextSong, autoplay) {
     if(!songList.value) songList.value = []
     if(nextSong.id == songId.value) return
 
-    let si = (songList.value || []).findIndex((song) => song.id === nextSong.id)
+    const si = (songList.value || []).findIndex((song) => song.id === nextSong.id)
     if(si != -1) {
         songList.value.splice(si, 1)
         if(si < currentIndex.value) currentIndex.value--
@@ -457,7 +459,7 @@ export function addToNext(nextSong, autoplay) {
     songList.value.splice(currentIndex.value + 1, 0, nextSong)
 
     if(playMode.value == 3) {
-        let shufflei = (shuffledList.value || []).findIndex((song) => song.id === nextSong.id)
+        const shufflei = (shuffledList.value || []).findIndex((song) => song.id === nextSong.id)
         if(shufflei != -1) {
             shuffledList.value.splice(shufflei, 1)
             if(shufflei < currentIndex.value) shuffleIndex.value--
@@ -465,8 +467,8 @@ export function addToNext(nextSong, autoplay) {
         shuffledList.value.splice(shuffleIndex.value + 1, 0, nextSong)
     }
     if(autoplay) playNext()
-    else if(songList.value.length == 1) addSong(nextSong.id, 0, false)
-    noticeOpen('已添加至下一首', 2)
+    else noticeOpen('已添加至下一首', 2)
+    if(songList.value.length == 1) addSong(nextSong.id, 0, autoplay)
 }
 export function addToNextLocal(song, autoplay) {
     addToNext(localMusicHandle([song], true), autoplay)

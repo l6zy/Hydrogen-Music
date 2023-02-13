@@ -76,7 +76,7 @@
       id="libraryScroll"
       class="library-song-list"
       :items="getData"
-      :item-size="45"
+      :item-size="44"
       key-field="nid"
       v-slot="{ item, index }"
     >
@@ -128,6 +128,7 @@
           transition: 0.2s;
           user-select: text;
           &:hover{
+            cursor: default;
             background-color: rgba(0, 0, 0, 0.045);
           }
           .item-title{

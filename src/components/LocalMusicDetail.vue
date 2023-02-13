@@ -3,8 +3,6 @@
   import { useRouter, onBeforeRouteUpdate} from 'vue-router';
   import { nanoid } from 'nanoid'
   import { songTime2 } from '../utils/player';
-  import { RecycleScroller } from 'vue-virtual-scroller'
-  import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
   import { addLocalMusicTOList, setShuffledList } from '../utils/player'
   import { useLocalStore } from '../store/localStore';
   import { usePlayerStore } from '../store/playerStore';
@@ -114,7 +112,6 @@
       <!-- </RecycleScroller> -->
     </div>
     </div>
-    <!-- <span class="item-title">{{index+1 + "---" + item.common.title }}</span> -->
   </div>
 </template>
 
@@ -182,14 +179,27 @@
           -webkit-box-orient: vertical;
           -webkit-line-clamp: 1;
           word-break: break-all;
+          user-select: text;
         }
       }
       .local-music-list{
         width: 100%;
         height: calc(100% - 221Px);
         overflow: auto;
-        &::-webkit-scrollbar{
+        user-select: text;
+        &::-webkit-scrollbar {
+          width: 5px;
+          height: 10px;
+          background-color: rgba(0, 0, 0, 0);
+        }
+        &::-webkit-scrollbar-thumb {
+          background-color: rgba(0, 0, 0, 0.0);
+        }
+        &::-webkit-scrollbar-track {
           display: none;
+        }
+        &:hover::-webkit-scrollbar-thumb{
+          background-color: rgba(0, 0, 0, 0.04);
         }
         .list-item{
           padding: 12Px 8Px;
@@ -199,7 +209,8 @@
           align-items: center;
           transition: 0.2s;
           &:hover{
-              background-color: rgba(0, 0, 0, 0.045);
+            cursor: default;
+            background-color: rgba(0, 0, 0, 0.045);
           }
           .item-title{
             width: 50%;

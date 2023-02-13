@@ -14,6 +14,9 @@
     widgetState.value = true
     lyricShow.value = false
   }
+  windowApi.hidePlayer(() => {
+    if(!widgetState.value) backHome()
+  })
 </script>
 
 <template>

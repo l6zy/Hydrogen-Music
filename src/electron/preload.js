@@ -76,11 +76,17 @@ function volumeDown(callback) {
 function musicProcessControl(callback) {
     ipcRenderer.on('music-process-control', callback)
 }
+function hidePlayer(callback) {
+    ipcRenderer.on('hide-player', callback)
+}
 function setSettings(settings) {
     ipcRenderer.send('set-settings', settings)
 }
 function clearLocalMusicData(type) {
     ipcRenderer.send('clear-local-music-data', type)
+}
+function registerShortcuts() {
+    ipcRenderer.send('register-shortcuts')
 }
 function unregisterShortcuts() {
     ipcRenderer.send('unregister-shortcuts')
@@ -99,6 +105,12 @@ function cancelDownloadMusicVideo() {
 }
 function copyTxt(txt) {
     ipcRenderer.send('copy-txt', txt)
+}
+function checkUpdate(callback) {
+    ipcRenderer.on('check-update', callback)
+}
+function setWindowTile(title) {
+    ipcRenderer.send('set-window-title', title)
 }
 contextBridge.exposeInMainWorld('windowApi', {
     windowMin,
@@ -127,10 +139,12 @@ contextBridge.exposeInMainWorld('windowApi', {
     volumeUp,
     volumeDown,
     musicProcessControl,
+    hidePlayer,
     setSettings,
     getSettings: () => ipcRenderer.invoke('get-settings'),
     openFile: () => ipcRenderer.invoke('dialog:openFile'),
     clearLocalMusicData,
+    registerShortcuts,
     unregisterShortcuts,
     getLastPlaylist: () => ipcRenderer.invoke('get-last-playlist'),
     openLocalFolder,
@@ -144,4 +158,6 @@ contextBridge.exposeInMainWorld('windowApi', {
     deleteMusicVideo: (id) => ipcRenderer.invoke('delete-music-video', id),
     getLocalMusicLyric: (filePath) => ipcRenderer.invoke('get-local-music-lyric', filePath),
     copyTxt,
+    checkUpdate,
+    setWindowTile,
 })

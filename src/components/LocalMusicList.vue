@@ -131,6 +131,9 @@
           }
         }
       }
+      .list-albums, .list-artists{
+        height: 100%;
+      }
     }
   }
 </style>

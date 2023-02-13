@@ -102,7 +102,7 @@
     artistPageType.value = type
   }
 
-  //歌单、专辑、歌手的收藏(极其降智的写法,主要问题还是接口缓存的问题,使用时间戳请求数据后他不会自己更新最新缓存，所以设置了2分钟的无缓存时间)
+  //歌单、专辑、歌手的收藏(极其降智的写法,主要问题是接口缓存的问题,使用时间戳请求数据后他不会自己更新最新缓存，所以设置了2分钟的无缓存时间)
   const subHandle = (id) => {
     let type1 = null
     let type2 = null
@@ -152,8 +152,10 @@
       subArtist(params).then(result => {
         if(result.code == 200) {
           subHandle(id)
+          if(params.t == 1) noticeOpen("收藏成功", 2)
+          else noticeOpen("已取消收藏", 2)
         } else {
-          noticeOpen("收藏失败", 2)
+          noticeOpen("收藏/取消收藏失败", 2)
         }
       })
     }
@@ -161,8 +163,10 @@
       subAlbum(params).then(result => {
         if(result.code == 200) {
           subHandle(id)
+          if(params.t == 1) noticeOpen("收藏成功", 2)
+          else noticeOpen("已取消收藏", 2)
         } else {
-          noticeOpen("收藏失败", 2)
+          noticeOpen("收藏/取消收藏失败", 2)
         }
       })
     }
@@ -173,10 +177,14 @@
         timestamp: new Date().getTime(),
       }
       subPlaylist(params).then(result => {
+        console.log(id)
+        console.log(result)
         if(result.code == 200) {
           subHandle(id)
+          if(params.t == 1) noticeOpen("收藏成功", 2)
+          else noticeOpen("已取消收藏", 2)
         } else {
-          noticeOpen("收藏失败", 2)
+          noticeOpen("收藏/取消收藏失败", 2)
         }
       })
     }

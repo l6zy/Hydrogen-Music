@@ -129,6 +129,9 @@ module.exports = IpcMainEvent = (win, app) => {
             return filePaths[0]
         }
     })
+    ipcMain.on('register-shortcuts', () => {
+        registerShortcuts(win)
+    })
     ipcMain.on('unregister-shortcuts', () => {
         Menu.setApplicationMenu(null)
         globalShortcut.unregisterAll()
@@ -276,8 +279,6 @@ module.exports = IpcMainEvent = (win, app) => {
     })
     //获取本地歌词
     ipcMain.handle('get-local-music-lyric', async (e, filePath) => {
-        const metedata = await parseFile(filePath)
-        if(metedata.common.lyrics) return metedata.common.lyrics[0]
         // async function getLyricByFile(filePath) {
         //     return new Promise((resolve, reject) => {
         //         jsmediatags.read(filePath, {
@@ -317,9 +318,15 @@ module.exports = IpcMainEvent = (win, app) => {
             const res = await readLyric(folderPath + '\\' + fileName + '.txt')
             if(res) return lyricHandle(res)
         }
+        const metedata = await parseFile(filePath)
+        if(metedata.common.lyrics) return metedata.common.lyrics[0]
+        
         return false
     })
     ipcMain.on('copy-txt', (e, txt) => {
         clipboard.writeText(txt)
+    })
+    ipcMain.on('set-window-title', (e, title) => {
+        win.setTitle(title)
     })
 }

@@ -87,6 +87,8 @@ export const useOtherStore = defineStore('otherStore', {
           currentVideoId: null,
           videoIsFull: false,
           searchResult: {},
+          toUpdate: false,
+          newVersion: null,
         }
     },
     actions: {

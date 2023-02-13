@@ -74,8 +74,19 @@
       .library-list{
         height: calc(100% - 50Px);
         overflow: auto;
-        &::-webkit-scrollbar{
+        &::-webkit-scrollbar {
+          width: 5px;
+          height: 10px;
+          background-color: rgba(0, 0, 0, 0);
+        }
+        &::-webkit-scrollbar-thumb {
+          background-color: rgba(0, 0, 0, 0.0);
+        }
+        &::-webkit-scrollbar-track {
           display: none;
+        }
+        &:hover::-webkit-scrollbar-thumb{
+          background-color: rgba(0, 0, 0, 0.04);
         }
       }
       .download-list{

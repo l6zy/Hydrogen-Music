@@ -104,7 +104,7 @@ module.exports = function InitTray(win, app, iconPath) {
             { 
                 label: '退出',
                 click: () => {
-                    if (process.platform !== 'darwin') win.webContents.send('player-save')
+                    win.webContents.send('player-save')
                 }
             }
         ])

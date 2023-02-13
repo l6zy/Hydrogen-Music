@@ -211,8 +211,9 @@
     }
     .router-closed{
       width: 100%;
-      height: 28px;
+      height: 27px;
       .user{
+        width: 30px;
         position: absolute;
         left: 365px;
         transform: translateY(-55%);

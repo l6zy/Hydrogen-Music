@@ -23,7 +23,11 @@
       currentMusic.value.unload()
       currentMusic.value = null
       progress.value = 0
-      if(!widgetState.value) widgetState.value = true
+      if(!widgetState.value) {
+        widgetState.value = true;
+        lyricShow.value = false
+      }
+      windowApi.setWindowTile('Hydrogen Music')
       clearTimeout(clearMusic)
     }, 300);
   }
@@ -101,7 +105,7 @@
       <RecycleScroller
         class="playlist-widget-item"
         :items="songList.slice(0, songList.length + 1)"
-        :item-size="37"
+        :item-size="36"
         key-field="id"
         v-slot="{ item, index }"
       >
@@ -120,7 +124,6 @@
 
 <style scoped lang="scss">
   .playlist-widget{
-    padding-left: 6px;
     width: 310Px;
     height: 0;
     background-color: rgba(225, 240, 240, 1);
@@ -177,7 +180,7 @@
         width: 5px;
         height: 10px;
         background-color: rgba(0, 0, 0, 0);
-    }
+      }
       &::-webkit-scrollbar-thumb {
         background-color: rgba(0, 0, 0, 0.0);
       }
@@ -237,9 +240,6 @@
           }
         }
       }
-      // .list-item:last-child{
-      //   margin-bottom: 8Px;
-      // }
       .list-item-playing{
         background-color: rgba(0, 0, 0, 0.045);
       }

@@ -12,7 +12,9 @@
     if (state === 'focus') {
         event.target.placeholder = ''
         searchShow.value = true
+        windowApi.unregisterShortcuts()
     } else {
+        windowApi.registerShortcuts()
         event.target.placeholder = 'SEARCH'
         searchShow.value = false
     }
@@ -64,6 +66,7 @@
     .search-input{
         width: 100%;
         padding: 0 10Px;
+        color: black;
         border: none;
         border-style: none;
         background: none;
