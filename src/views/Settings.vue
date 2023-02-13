@@ -406,7 +406,7 @@
                 <img src="../assets/icon/icon.ico" alt="">
             </div>
             <div class="version">V0.3.0</div>
-            <div class="app-author" @click="toGithub()">Author: Kaidesuyo</div>
+            <div class="app-author" @click="toGithub()">Made by Kaidesuyo</div>
         </div>
     </div>
   </div>
