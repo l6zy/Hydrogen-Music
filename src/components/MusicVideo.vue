@@ -88,8 +88,9 @@
   }
   const loginHandle = async (data) => {
     closeLogin()
+    if(selectedInfo.value.bvid) {search()}
     localStorage.setItem('Sessdata', data.url.match(/SESSDATA=(\S*)&bili_jct/)[1])
-    headers.cookie = 'SESSDATA=' + localStorage.getItem('Sessdata')
+    headers.cookie = 'SESSDATA=' + localStorage.getItem('Sessdata')  + ';'
     const userInfo = await windowApi.getRequestData({url: 'http://api.bilibili.com/nav', option: {headers: headers}})
     if(userInfo.code == 0) {
         noticeOpen('登录成功', 2)
@@ -112,7 +113,7 @@
         if(bv) {
             setDefault()
             selectedInfo.value = {bvid: bv}
-            if(localStorage.getItem('Sessdata')) headers.cookie = 'SESSDATA=' + localStorage.getItem('Sessdata')
+            if(localStorage.getItem('Sessdata')) headers.cookie = 'SESSDATA=' + localStorage.getItem('Sessdata') + ';'
             else headers.cookie = ''
             const videoInfo = await windowApi.getRequestData({url: 'http://api.bilibili.com/x/web-interface/view', option: {headers: headers,params: {bvid: bv}}})
             if(videoInfo.code == 0) {
@@ -142,7 +143,7 @@
   const selectPart = async (cid) => {
     setDefault()
     selectedInfo.value.part = cid
-    if(localStorage.getItem('Sessdata')) headers.cookie = 'SESSDATA=' + localStorage.getItem('Sessdata')
+    if(localStorage.getItem('Sessdata')) headers.cookie = 'SESSDATA=' + localStorage.getItem('Sessdata')  + ';'
     const videoData = await windowApi.getRequestData({url: 'http://api.bilibili.com/x/player/playurl', option: {headers: headers,params: {bvid: selectedInfo.value.bvid, cid: cid, fourk: 1, fnval: 80}}})
     currentVideoInfo.value.quality = videoData.data.accept_description
     currentVideoInfo.value.video = videoData.data.dash.video
@@ -211,7 +212,7 @@
     if(!flag) return
     isDownloading.value = true
     noticeOpen('开始添加，请稍后', 2)
-    if(localStorage.getItem('Sessdata')) headers.cookie = 'SESSDATA=' + localStorage.getItem('Sessdata')
+    if(localStorage.getItem('Sessdata')) headers.cookie = 'SESSDATA=' + localStorage.getItem('Sessdata')  + ';'
     console.log(currentVideoInfo.value)
     console.log(selectedInfo.value)
     const urlIndex = selectedInfo.value.qn - (currentVideoInfo.value.quality.length - currentVideoInfo.value.video.length / 2)
