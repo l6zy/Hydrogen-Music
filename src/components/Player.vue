@@ -291,7 +291,7 @@
           white-space: nowrap;
           position: relative;
           &:first-child{
-            padding-bottom: 2vh;
+            padding-bottom: 1.2vh;
             overflow: hidden;
           }
           .music-name-lable,.music-author-lable{
@@ -301,7 +301,6 @@
             margin-left: 10Px;
             width: 100%;
             font-family: SourceHanSansCN-Bold;
-            overflow: auto;
             user-select: text;
             &::-webkit-scrollbar{
                 display: none;
@@ -309,6 +308,9 @@
           }
           .music-name{
             margin-left: 1.5vh;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
           }
           .music-name-lable{
             width: 100%;
@@ -321,6 +323,7 @@
             transform: translateX(0);
           }
           .music-name{
+            padding: 0.3vh 0;
             font-family: SourceHanSansCN-Bold;
             font-weight: bold;
             font-size: 2.4vh;
