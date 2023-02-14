@@ -1,18 +1,18 @@
 const { ipcMain, shell, dialog, globalShortcut, Menu, clipboard } =  require('electron')
 const axios = require('axios')
-const fs = require('fs');
+const fs = require('fs')
 const path = require('path')
-const { parseFile } = require('music-metadata');
+const { parseFile } = require('music-metadata')
 // const jsmediatags = require("jsmediatags");
 const registerShortcuts = require('./shortcuts')
 const Store = require('electron-store')
-const CancelToken = axios.CancelToken;
-let cancel = null;
+const CancelToken = axios.CancelToken
+let cancel = null
 
 module.exports = IpcMainEvent = (win, app) => {
-    const settingsStore = new Store({name: 'settings'});
-    const lastPlaylistStore = new Store({name: 'lastPlaylist'});
-    const musicVideoStore = new Store({name: 'musicVideo'});
+    const settingsStore = new Store({name: 'settings'})
+    const lastPlaylistStore = new Store({name: 'lastPlaylist'})
+    const musicVideoStore = new Store({name: 'musicVideo'})
     // win.on('restore', () => {
         // win.webContents.send('lyric-control')
     // })
@@ -21,9 +21,9 @@ module.exports = IpcMainEvent = (win, app) => {
     })
     ipcMain.on('window-max', () => {
         if(win.isMaximized()){
-            win.restore();
+            win.restore()
         }else{
-            win.maximize();
+            win.maximize()
         }
     })
     ipcMain.on('window-close', async () => {
@@ -48,11 +48,11 @@ module.exports = IpcMainEvent = (win, app) => {
             return null
     })
     ipcMain.on('set-settings', (e, settings) => {
-        settingsStore.set('settings', JSON.parse(settings));
+        settingsStore.set('settings', JSON.parse(settings))
         registerShortcuts(win)
     })
     ipcMain.handle('get-settings', async () => {
-        const settings =  await settingsStore.get('settings');
+        const settings =  await settingsStore.get('settings')
         if(settings) return settings
         else {
             let initSettings = {
@@ -113,10 +113,11 @@ module.exports = IpcMainEvent = (win, app) => {
                     },
                 ],
                 other: {
+                    globalShortcuts: true,
                     quitApp:'minimize'
                 }
             }
-            settingsStore.set('settings', initSettings);
+            settingsStore.set('settings', initSettings)
             registerShortcuts(win)
             return initSettings
         }
@@ -144,7 +145,7 @@ module.exports = IpcMainEvent = (win, app) => {
         app.exit()
     })
     ipcMain.handle('get-last-playlist', async () => {
-        const lastPlaylist =  await lastPlaylistStore.get('playlist');
+        const lastPlaylist =  await lastPlaylistStore.get('playlist')
         if(lastPlaylist) return lastPlaylist
         else return null
     })
@@ -181,7 +182,7 @@ module.exports = IpcMainEvent = (win, app) => {
             fs.access(path, fs.constants.F_OK, (err) => {
                 if (!err) resolve(true)
                 else return resolve(false)
-            });
+            })
         })
     }
     ipcMain.handle('get-bili-video', async (e, request) => {
@@ -202,29 +203,29 @@ module.exports = IpcMainEvent = (win, app) => {
                 headers: request.option.headers,
                 responseType: 'stream',
                 onDownloadProgress:(progressEvent)=>{
-                    let progress = Math.round( progressEvent.loaded / progressEvent.total*100);
+                    let progress = Math.round( progressEvent.loaded / progressEvent.total*100)
                     win.webContents.send('download-video-progress', progress)
-                    if(returnCode == 'cancel') win.setProgressBar(-1);
-                    else win.setProgressBar(progress / 100);
+                    if(returnCode == 'cancel') win.setProgressBar(-1)
+                    else win.setProgressBar(progress / 100)
                 },
                 cancelToken: new CancelToken(function executor(c) {
-                    cancel = c;
+                    cancel = c
                 })
             })
             const writer = fs.createWriteStream(path)
-            await result.data.pipe(writer);
+            await result.data.pipe(writer)
             ipcMain.on('cancel-download-music-video', () => {
                 returnCode = 'cancel'
                 writer.close()
                 writer.once('close', () => {
                     cancel()
-                    win.setProgressBar(-1);
-                    fs.unlinkSync(path);
+                    win.setProgressBar(-1)
+                    fs.unlinkSync(path)
                 })
             })
             return new Promise((resolve, reject) => {
                 writer.on("finish", () => {
-                    win.setProgressBar(-1);
+                    win.setProgressBar(-1)
                     if(returnCode == 'cancel') {
                         resolve(returnCode)
                         return returnCode
@@ -233,12 +234,12 @@ module.exports = IpcMainEvent = (win, app) => {
                     request.option.params.path = path
                     saveMusicVideo(request.option.params)
                     resolve(returnCode)
-                });
+                })
                 writer.on("error", () => {
-                    win.setProgressBar(-1);
+                    win.setProgressBar(-1)
                     reject('failed')
-                });
-            });
+                })
+            })
         }
     })
     ipcMain.handle('music-video-isexists', async (e, obj) => {
@@ -260,7 +261,7 @@ module.exports = IpcMainEvent = (win, app) => {
             const filePath = path.join(folderPath, filename)
             if(!musicVideo.some(video => video.path == filePath)) {
               console.log(filePath)
-                fs.unlinkSync(filePath);
+                fs.unlinkSync(filePath)
             }
         })
         return true

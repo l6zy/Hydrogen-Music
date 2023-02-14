@@ -93,6 +93,12 @@ module.exports = async function registerShortcuts(win) {
         
     Menu.setApplicationMenu(Menu.buildFromTemplate(menu))
     
+    globalShortcut.register('CommandOrControl+Shift+F12', () => {
+        // 获取当前窗口并打开控制台
+        win.webContents.openDevTools({mode: 'detach'});
+    });
+    
+    if(!settingsStore.get('settings.other.globalShortcuts')) return
     globalShortcut.register(shortcuts.find(shortcut => shortcut.id == 'play').globalShortcut, () => {
         win.webContents.send('music-playing-control')
     })
@@ -114,9 +120,4 @@ module.exports = async function registerShortcuts(win) {
     globalShortcut.register(shortcuts.find(shortcut => shortcut.id == 'processBack').globalShortcut, () => {
         win.webContents.send('music-process-control', 'back')
     })
-
-    globalShortcut.register('CommandOrControl+Shift+F12', () => {
-        // 获取当前窗口并打开控制台
-        win.webContents.openDevTools({mode: 'detach'});
-    });
 }

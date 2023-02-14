@@ -19,6 +19,7 @@
   const tlyricSize = ref(13)
   const rlyricSize = ref(12)
   const lyricInterlude = ref(13)
+  const globalShortcuts = ref(false)
   const quitApp = ref('minimize')
   const downloadFolder = ref(null)
   const videoFolder = ref(null)
@@ -45,6 +46,7 @@
         downloadFolder.value = settings.local.downloadFolder
         localFolder.value = settings.local.localFolder
         shortcutsList.value = settings.shortcuts
+        globalShortcuts.value = settings.other.globalShortcuts
         quitApp.value = settings.other.quitApp
     })
   })
@@ -65,6 +67,7 @@
         },
         shortcuts: shortcutsList.value,
         other: {
+            globalShortcuts: globalShortcuts.value,
             quitApp: quitApp.value
         }
     }
@@ -350,15 +353,26 @@
                 <h2 class="item-title">快捷键</h2>
                 <div class="line"></div>
                 <div class="item-options" tabindex='0' @keydown="inputShortcut($event)">
+                    <div class="option">
+                        <div class="option-name">开启全局快捷键</div>
+                        <div class="option-operation">
+                            <div class="toggle" @click="globalShortcuts = !globalShortcuts">
+                                <div class="toggle-off" :class="{'toggle-on-in': globalShortcuts}">{{globalShortcuts ? '已开启' : '已关闭'}}</div>
+                                <Transition name="toggle">
+                                    <div class="toggle-on" v-show="globalShortcuts"></div>
+                                </Transition>
+                            </div>
+                        </div>
+                    </div>
                     <div class="shortcuts-title">
                         <div class="title-function">功能说明</div>
                         <div class="title-shortcuts">快捷键</div>
-                        <div class="title-globalShortcuts">全局快捷键</div>
+                        <div class="title-globalShortcuts" :class="{'forbid-shortcuts': !globalShortcuts}">全局快捷键</div>
                     </div>
                     <div class="shortcuts" v-for="(item, index) in shortcutsList">
                         <div class="shortcut-name">{{item.name}}</div>
                         <div class="shortcut" :class="{'shortcut-selected': (selectedShortcut && selectedShortcut.id == item.id && !selectedShortcut.type)}" @click.stop="changeShortcut(item.id, false)">{{formatShortcutName(item.shortcut)}}</div>
-                        <div class="globalShortcut" :class="{'shortcut-selected': (selectedShortcut && selectedShortcut.id == item.id && selectedShortcut.type)}" @click.stop="changeShortcut(item.id, true)">{{formatShortcutName(item.globalShortcut)}}</div>
+                        <div class="globalShortcut" :class="{'shortcut-selected': (selectedShortcut && selectedShortcut.id == item.id && selectedShortcut.type), 'forbid-shortcuts': !globalShortcuts}" @click.stop="changeShortcut(item.id, true)">{{formatShortcutName(item.globalShortcut)}}</div>
                     </div>
                     <div class="default-shortcuts" @click="setDefaultShortcuts()">恢复默认快捷键</div>
                 </div>
@@ -691,6 +705,10 @@
                                 }
                             }
                         }
+                    }
+                    .forbid-shortcuts{
+                        opacity: 0.5;
+                        pointer-events: none;
                     }
                     .shortcuts-title{
                         font: 14px SourceHanSansCN-Bold;
