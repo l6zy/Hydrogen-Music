@@ -6,12 +6,16 @@
 
   const otherStore =  useOtherStore()
   const { dialogShow, dialogHeader, dialogText } = storeToRefs(otherStore)
+
+  const isActive = ref(false)
+  const onAfterEnter = () => isActive.value = true
+  const onAfterLeave = () => isActive.value = false
 </script>
 
 <template>
-  <Transition name="dialog-fade">
-    <div class="global-dialog" v-show="dialogShow">
-      <div class="dialog-container">
+  <div class="global-dialog" v-show="dialogShow"></div>
+  <Transition name="dialog-fade" @after-enter="onAfterEnter" @after-leave="onAfterLeave">
+      <div class="dialog-container" :class="{'dialog-container-active': isActive}" v-if="dialogShow">
           <div class="dialog">
               <div class="dialog-header">
                   <span class="header-title">{{dialogHeader}}</span>
@@ -29,7 +33,6 @@
           <span class="dialog-style dialog-style3"></span>
           <span class="dialog-style dialog-style4"></span>
       </div>
-    </div>
   </Transition>
 </template>
 
@@ -42,7 +45,9 @@
     left: 0;
     background-color: rgba(0, 0, 0, 0.1);
     z-index: 999;
+  }
     .dialog-container{
+        z-index: 1000;
         width: 0;
         height: 0;
         background-image: url('../assets/img/halftone.png');
@@ -53,11 +58,9 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        animation: dialog-container-in 0.4s 0.15s forwards;
-        @keyframes dialog-container-in {
-          0%{width: 0;height: 0;}
-          50%{width: 300Px;height: 0;padding: 0;}
-          100%{width: 300Px;height: 150Px;padding: 15Px 20px;}
+
+        &-active {
+          width: 300Px;height: 150Px;padding: 15Px 20px;
         }
         .dialog{
             width: 100%;
@@ -140,16 +143,20 @@
           left: $position;
         }
     }
-  }
-  .dialog-fade-enter-active {
-      transition: 0.2s;
-    }
-    .dialog-fade-leave-active {
-      transition: 0.1s;
-    }
+</style>
 
-    .dialog-fade-enter-from,
-    .dialog-fade-leave-to {
-      opacity: 0;
-    }
+<style lang="scss">
+  .dialog-fade-enter-active {
+    animation: dialog-container-in 0.4s 0.15s forwards;
+  }
+  .dialog-fade-leave-active {
+    animation: dialog-container-in 0.4s reverse;
+  }
+
+  @keyframes dialog-container-in {
+    0%{width: 0;height: 0;padding: 0;}
+    50%{width: 300Px;height: 0;padding: 0;}
+    100%{width: 300Px;height: 150Px;padding: 15Px 20px;}
+  }
+
 </style>
