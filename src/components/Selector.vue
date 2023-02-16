@@ -7,7 +7,10 @@
       <transition name="selector" @enter="absolutePosition(overlay, select)">
         <div
           class="selector-option"
-          :style="{ '--count': options.length }"
+          :style="{
+            '--count': options.length < maxItems ? options.length : maxItems,
+            maxHeight: maxItems * 34 + 16 + 'px',
+          }"
           v-if="option"
           ref="overlay"
         >
@@ -32,6 +35,10 @@ import { computed, onActivated, onDeactivated, ref } from "vue";
 const props = defineProps({
   options: Array,
   modelValue: null,
+  maxItems: {
+    type: Number,
+    default: 4,
+  },
 });
 const emit = defineEmits(["update:modelValue"]);
 
@@ -138,6 +145,7 @@ const changeOptionsVisible = () => (option.value = !option.value);
 
 .selector-option {
   position: absolute;
+  overflow-y: overlay;
   background: rgb(228, 240, 240);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
   line-height: 25px;
@@ -156,6 +164,7 @@ const changeOptionsVisible = () => (option.value = !option.value);
   line-height: 34px;
   transition: background-position 0.2s, color 0.2s;
   cursor: pointer;
+  text-align: center;
   &:hover {
     background-position: 0 0;
     color: white;
@@ -164,6 +173,23 @@ const changeOptionsVisible = () => (option.value = !option.value);
     background-color: black;
     color: white;
   }
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 0;
+}
+
+::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  cursor: pointer;
+  border-radius: 0;
+  background: rgba(0, 0, 0, 0.15);
+  transition: color 0.2s ease;
 }
 </style>
 <style lang="scss">
