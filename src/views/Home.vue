@@ -1,4 +1,5 @@
 <script setup>
+  import { ref } from 'vue';
   import { useRouter } from 'vue-router';
   import { logout } from '../api/user'
   import { noticeOpen } from "../utils/dialog";
@@ -7,7 +8,7 @@
 
   const router  =useRouter()
   const userStore = useUserStore()
-  
+  const isActive = ref(false)
   const toSettings = () => {
       router.push('/settings')
   }
@@ -25,6 +26,8 @@
       })
     } else noticeOpen("您已退出账号", 2)
   }
+  const onAfterEnter = () => isActive.value = true
+  const onAfterLeave = () => isActive.value = false
 </script>
 
 <template>
@@ -43,15 +46,17 @@
                 <svg v-else t="1672136404205" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5403" width="200" height="200"><path d="M511.997 551.041c-218.044 0-399.92 168.61-441.722 392.645l883.45-0.439C911.607 719.432 729.83 551.041 511.997 551.041zM266.597 305.64c0 135.532 109.868 245.401 245.403 245.401 135.53 0 245.403-109.87 245.403-245.4C757.403 170.105 647.53 60.235 512 60.235c-135.535 0-245.403 109.87-245.403 245.406z" fill="#2c2c2c" p-id="5404" data-spm-anchor-id="a313x.7781069.0.i5" class="selected"></path></svg>
                 <div class="img-mask"></div>
               </div>
-              <div class="app-option" v-show="userStore.appOptionShow">
-                <div class="option" @click="toSettings()">设置</div>
-                <div class="option" @click="userLogout()">退出登录</div>
-
-                <div class="option-style option-style1"></div>
-                <div class="option-style option-style2"></div>
-                <div class="option-style option-style3"></div>
-                <div class="option-style option-style4"></div>
-              </div>
+              <transition name="app-option" @after-enter="onAfterEnter" @after-leave="onAfterLeave">
+                <div class="app-option" :class="{ 'app-option-active': isActive }" v-show="userStore.appOptionShow">
+                  <div class="option" @click="toSettings()">设置</div>
+                  <div class="option" @click="userLogout()">退出登录</div>
+  
+                  <div class="option-style option-style1"></div>
+                  <div class="option-style option-style2"></div>
+                  <div class="option-style option-style3"></div>
+                  <div class="option-style option-style4"></div>
+                </div>
+              </transition>
             </div>
           </div>
           <div v-if="userStore.homePage && userStore.cloudDiskPage" v-show="router.currentRoute.value.name != 'search' && router.currentRoute.value.name != 'settings'" :class="{'router-tracker': true, 'router-tracker0': router.currentRoute.value.name == 'homepage', 'router-tracker1': router.currentRoute.value.name == 'clouddisk', 'router-tracker2': router.currentRoute.value.fullPath.split('/')[1] == 'mymusic' || router.currentRoute.value.fullPath.split('/')[1] == 'login'}">
@@ -163,10 +168,8 @@
             position: absolute;
             top: 35px;
             left: -32.5px;
-            animation: app-option-in 0.2s forwards;
-            @keyframes app-option-in {
-              0%{height: 0;padding: 0;}
-              100%{height: 96px;padding: 12Px 0;}
+            &-active {
+              height: 96px;padding: 12Px 0;
             }
             .option{
               padding: 8px 14px;
@@ -229,4 +232,18 @@
       display: none;
     }
   }
+</style>
+
+<style lang="scss">
+.app-option-enter-active {
+  animation: app-option-in 0.2s forwards;
+
+}
+.app-option-leave-active {
+  animation: app-option-in 0.2s reverse;
+}
+@keyframes app-option-in {
+  0%{height: 0;padding: 0;}
+  100%{height: 96px;padding: 12Px 0;}
+}
 </style>

@@ -8,6 +8,7 @@
   import { isLogin } from '../utils/authority';
   import { useUserStore } from '../store/userStore';
   import { usePlayerStore } from '../store/playerStore';
+  import Selector from '../components/Selector.vue'
 
   const router = useRouter()
   const userStore = useUserStore()
@@ -15,12 +16,44 @@
 
   const vipInfo = ref(null)
   const musicLevel = ref('standard')
+  const musicLevelOptions = ref([
+    {
+        label: '标准',
+        value: 'standard'
+    },
+    {
+        label: '较高',
+        value: 'higher'
+    },
+    {
+        label: '极高',
+        value: 'exhigh'
+    },
+    {
+        label: '无损',
+        value: 'lossless'
+    },
+    {
+        label: 'Hi-Res',
+        value: 'hires'
+    },
+  ])
   const lyricSize = ref(20)
   const tlyricSize = ref(13)
   const rlyricSize = ref(12)
   const lyricInterlude = ref(13)
   const globalShortcuts = ref(false)
   const quitApp = ref('minimize')
+  const quitAppOptions = ref([
+    {
+        label: '最小化至托盘',
+        value: 'minimize'
+    },
+    {
+        label: '直接退出',
+        value: 'quit'
+    }
+  ])
   const downloadFolder = ref(null)
   const videoFolder = ref(null)
   const localFolder = ref([])
@@ -256,13 +289,7 @@
                     <div class="option">
                         <div class="option-name">音质选择</div>
                         <div class="option-operation">
-                            <select v-model="musicLevel" name="musicLevel">
-                                <option value="standard">标准</option>
-                                <option value="higher">较高</option>
-                                <option value="exhigh">极高</option>
-                                <option value="lossless">无损</option>
-                                <option value="hires">Hi-Res</option>
-                            </select>
+                            <Selector v-model="musicLevel" :options="musicLevelOptions"></Selector>
                         </div>
                     </div>
                     <div class="option">
@@ -406,10 +433,7 @@
                     <div class="option">
                         <div class="option-name">退出应用时</div>
                         <div class="option-operation">
-                            <select v-model="quitApp" name="quitApp">
-                                <option value="minimize">最小化至托盘</option>
-                                <option value="quit">直接退出</option>
-                            </select>
+                            <Selector v-model="quitApp" :options="quitAppOptions"></Selector>
                         </div>
                     </div>
                 </div>
@@ -560,7 +584,7 @@
                 .item-options{
                     outline: none;
                     .option{
-                        margin-bottom: 35px;
+                        margin-bottom: 32px;
                         display: flex;
                         flex-direction: row;
                         align-items: center;
@@ -571,10 +595,11 @@
                             color: black;
                             text-align: left;
                         }
-                        input, select{
+                        input, .selector{
                             margin-right: 1px;
                             width: 200px;
-                            padding: 5px 10px;
+                            height: 34px;
+                            padding: 5px 1px;
                             background-color: rgba(255, 255, 255, 0.35);
                             color: black;
                             border: none;
@@ -599,6 +624,7 @@
                         }
                         .toggle{
                             margin-right: 1px;
+                            height: 34px;
                             width: 200px;
                             position: relative;
                             overflow: hidden;
@@ -611,6 +637,7 @@
                                 height: 100%;
                                 font: 13px SourceHanSansCN-Bold;
                                 transition: 0.2s;
+                                line-height: 24px;
                             }
                             .toggle-off{
                                 background-color: rgba(255, 255, 255, 0.35);

@@ -61,6 +61,7 @@ export function play(url, autoplay) {
             if(playMode.value == 0 && currentIndex.value == songList.value.length - 1) { playing.value = false;playModeOne = true;windowApi.playOrPauseMusicCheck(playing.value);return } //顺序播放结束暂停状态
             if(playMode.value == 1) { playNext();return } //列表循环
             if(playMode.value == 3) { playNext() } //随机播放(为列表循环)
+            if(playMode.value == 2) { clearLycAnimation() } // 单曲循环播放结束时清除歌词动画
         }
     })
     currentMusic.value.once('load', () => {
