@@ -9,6 +9,7 @@
   import { useUserStore } from '../store/userStore';
   import { usePlayerStore } from '../store/playerStore';
   import Selector from '../components/Selector.vue'
+  import config from '../../package.json'
 
   const router = useRouter()
   const userStore = useUserStore()
@@ -61,7 +62,7 @@
   const selectedShortcut = ref(null)
   const newShortcut = ref([])
   const shortcutCharacter  = ['=', '-', '~', '@', '#', '$', '[', ']', ';', "'", ',', '.', '/', '!'];
-
+  const version = config.version
   if(isLogin()) {
     getVipInfo().then(result => {
         vipInfo.value = result.data
@@ -443,7 +444,7 @@
             <div class="app-icon">
                 <img src="../assets/icon/icon.ico" alt="">
             </div>
-            <div class="version">V0.3.0</div>
+            <div class="version">V{{version}}</div>
             <div class="app-author" @click="toGithub()">Made by Kaidesuyo</div>
         </div>
     </div>
