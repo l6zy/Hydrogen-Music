@@ -3,8 +3,8 @@
     <div class="selector-head">
       <span class="select-head-cont">{{ current.label }}</span>
     </div>
-    <teleport to="body">
-      <transition name="selector" @enter="absolutePosition(overlay, select)">
+    <Portal :append-to="appendTo">
+      <transition name="selector" @enter="onOverlayEnter">
         <div
           class="selector-option"
           :style="{
@@ -26,12 +26,13 @@
           </div>
         </div>
       </transition>
-    </teleport>
+    </Portal>
   </div>
 </template>
 <script setup>
 import { computed, onActivated, onDeactivated, ref } from "vue";
-import { absolutePosition } from "../utils/domHandler";
+import {absolutePosition, relativePosition } from "../utils/domHandler";
+import Portal from "./Portal.vue";
 
 const props = defineProps({
   options: Array,
@@ -39,6 +40,10 @@ const props = defineProps({
   maxItems: {
     type: Number,
     default: 4,
+  },
+  appendTo: {
+    type: String,
+    default: 'body',
   },
 });
 const emit = defineEmits(["update:modelValue"]);
@@ -65,17 +70,37 @@ onActivated(() => {
 });
 onDeactivated(() => {
   window.removeEventListener("click", clickOutside);
+  option.value = false;
 });
 
 const changeOptionsVisible = () => (option.value = !option.value);
+
+const onOverlayEnter = () => {
+  if (props.appendTo === 'self') {
+    relativePosition(overlay.value, select.value)
+  } else {
+    absolutePosition(overlay.value, select.value)
+  }
+}
 </script>
 
 <style scoped lang="scss">
 .selector {
   position: relative;
+  z-index: 1;
   &-head {
-    text-align: center;
-    box-sizing: border-box;
+    margin-right: 1px;
+    width: 200px;
+    height: 34px;
+    padding: 5px 1px;
+    font: 13px SourceHanSansCN-Bold;
+    background-color: rgba(255, 255, 255, 0.35);
+    cursor: pointer;
+    transition: 0.2s;
+    &:hover {
+      opacity: 0.8;
+      box-shadow: 0 0 0 1px black;
+    }
   }
 }
 
@@ -131,7 +156,7 @@ const changeOptionsVisible = () => (option.value = !option.value);
 <style lang="scss">
 .selector-enter-active,
 .selector-leave-active {
-  transition: all .225s;
+  transition: all 0.225s;
   overflow: hidden;
   box-sizing: content-box;
 }

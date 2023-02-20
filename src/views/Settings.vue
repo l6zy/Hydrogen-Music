@@ -595,7 +595,7 @@
                             color: black;
                             text-align: left;
                         }
-                        input, .selector{
+                        input{
                             margin-right: 1px;
                             width: 200px;
                             height: 34px;
