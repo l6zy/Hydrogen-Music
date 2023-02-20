@@ -128,9 +128,10 @@ const routes = [
             },
         ],
         beforeEnter: (to, from, next) => {
-            if(isLogin()) next()
-            else if((from.name == 'homepage' || from.name == 'search') && to.fullPath != '/mymusic') next()
-            else next({name: 'login'})
+            // if(isLogin()) next()
+            // else if((from.name == 'homepage' || from.name == 'search') && to.fullPath != '/mymusic') next()
+            // else next({name: 'login'})
+            next()
         },
     },
     {

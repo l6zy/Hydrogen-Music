@@ -27,7 +27,11 @@
 
 //   const typeList = [['我创建的','我收藏的'],['专辑','歌手','MV'],['正在下载','下载完成'],['全部','专辑','歌手']]
 //   const currentList = ref(typeList[0])
-  changeTracker(0)
+  if (user.value) {
+    changeTracker(0)
+  } else {
+    changeTracker(3)
+  }
   async function loadUserPlaylist() {
     let params = {
         uid: user.value.userId,
@@ -96,6 +100,7 @@
     if(num == 0) {
         option.value = num
         typeTracker.value = num
+        if (!user.value) return
         loadUserPlaylist()
         return
     }
@@ -155,13 +160,13 @@
             </div>
             <span class="refresh" @click="refreshLocal()" v-show="(listType1 == 2 && listType2 == 1 && localStore.downloadedFolderSettings) || (listType1 == 3 && localStore.localFolderSettings.length != 0)">刷新</span>
         </div>
+        <div v-show="(option == 0 || option == 1) && !user" class="no-login" @click="router.push('/login')"><span>登录</span></div>
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
-  .library-type{
-    height: 50Px;
+.library-type{
     .type-one{
         .type-option{
             padding-left: 5Px;
@@ -248,12 +253,25 @@
             margin-right: 6Px;
             position: relative;
             right: 0;
-            }
         }
+    
         .refresh{
             &:hover{
                 color: black;
             }
         }
     }
+    .no-login {
+        font: 14px SourceHanSansCN-Bold;
+        color: black;
+        background-color: rgba(255, 255, 255, 0.35);
+        padding: 10px;
+        transition: 0.2s;
+        cursor: pointer;
+        width: 100%;
+        &:active{
+            opacity: 0.7;
+        }
+    }
+}
 </style>

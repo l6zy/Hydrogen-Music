@@ -5,9 +5,11 @@
   import { noticeOpen } from "../utils/dialog";
   import { isLogin } from '../utils/authority'
   import { useUserStore } from '../store/userStore';
+  import { useLibraryStore } from '../store/libraryStore';
 
   const router  =useRouter()
   const userStore = useUserStore()
+  const { updateUserPlaylist }  = useLibraryStore()
   const isActive = ref(false)
   const toSettings = () => {
       router.push('/settings')
@@ -21,6 +23,7 @@
             userStore.biliUser = null
             router.push('/')
             noticeOpen("已退出账号", 2)
+            updateUserPlaylist([])
         }
         else noticeOpen("退出登录失败", 2)
       })
