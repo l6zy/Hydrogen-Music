@@ -56,6 +56,8 @@
         listType2.value = 1
         changeLibraryList(1)
     } else if (option.value == 1 && typeTwo.value == 0) {
+        listType2.value = 0
+        if (!user.value) return
         let params = {
             limit: 50,
             offset: 0,
@@ -147,11 +149,13 @@
         </div>
         <div class="type-two">
             <div class="type-option">
-                <span v-show="option == 0" class="option" :class="{'option-selected': typeOne == 0}" @click="changeType(0)">我创建的</span>
-                <span v-show="option == 0" class="option" :class="{'option-selected': typeOne == 1}" @click="changeType(1)">我收藏的</span>
-                <span v-show="option == 1" class="option" :class="{'option-selected': typeTwo == 0}" @click="changeType(0)">专辑</span>
-                <span v-show="option == 1" class="option" :class="{'option-selected': typeTwo == 1}" @click="changeType(1)">歌手</span>
-                <span v-show="option == 1" class="option" :class="{'option-selected': typeTwo == 2}" @click="changeType(2)">MV</span>
+                <template v-if="user">
+                    <span v-show="option == 0" class="option" :class="{'option-selected': typeOne == 0}" @click="changeType(0)">我创建的</span>
+                    <span v-show="option == 0" class="option" :class="{'option-selected': typeOne == 1}" @click="changeType(1)">我收藏的</span>
+                    <span v-show="option == 1" class="option" :class="{'option-selected': typeTwo == 0}" @click="changeType(0)">专辑</span>
+                    <span v-show="option == 1" class="option" :class="{'option-selected': typeTwo == 1}" @click="changeType(1)">歌手</span>
+                    <span v-show="option == 1" class="option" :class="{'option-selected': typeTwo == 2}" @click="changeType(2)">MV</span>
+                </template>
                 <span v-show="option == 2" class="option" :class="{'option-selected': typeThree == 0}" @click="changeType(0)">正在下载</span>
                 <span v-show="option == 2" class="option" :class="{'option-selected': typeThree == 1}" @click="changeType(1)">下载完成</span>
                 <span v-show="option == 3" class="option" :class="{'option-selected': typeFour == 0}" @click="changeType(0)">全部</span>
@@ -262,6 +266,7 @@
         }
     }
     .no-login {
+        margin-top: 16px;
         font: 14px SourceHanSansCN-Bold;
         color: black;
         background-color: rgba(255, 255, 255, 0.35);
