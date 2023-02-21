@@ -83,6 +83,19 @@
         globalShortcuts.value = settings.other.globalShortcuts
         quitApp.value = settings.other.quitApp
     })
+    const query = router.currentRoute.value.query
+    if (query) {
+        switch (query.id) {
+            case 'local':
+                document.querySelector('.selected-local-folder-item+.add-option').scrollIntoView({behavior: 'smooth'})
+                break;
+            case 'download':
+                document.querySelector('.select-download-folder .select-option').scrollIntoView({behavior: 'smooth'})
+                break;
+            default:
+                break;
+        }
+    }
   })
 
   const setAppSettings = () => {

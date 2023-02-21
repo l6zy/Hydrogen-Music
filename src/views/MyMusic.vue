@@ -28,8 +28,8 @@
       <DownloadList v-show="listType1 == 2 && listType2 == 0" class="download-list"></DownloadList>
       <LocalMusicList :folderlist="downloadedMusicFolder" type="downloaded" v-if="downloadedMusicFolder" v-show="listType1 == 2 && listType2 == 1" class="local-list"></LocalMusicList>
       <LocalMusicList :folderlist="localMusicFolder" :classifylist="localMusicClassify" type="local" v-if="localMusicFolder" v-show="listType1 == 3" class="local-list"></LocalMusicList>
-      <div class="no-folder" @click="router.push('/settings')" v-if="!downloadedFolderSettings && listType1 == 2 && listType2 == 1">去设置下载地址</div>
-      <div class="no-folder" @click="router.push('/settings')" v-if="localFolderSettings.length == 0 && listType1 == 3">去设置扫描地址</div>
+      <div class="no-folder" @click="router.push({path: '/settings', query: { id: 'download' }})" v-if="!downloadedFolderSettings && listType1 == 2 && listType2 == 1">去设置下载地址</div>
+      <div class="no-folder" @click="router.push({path: '/settings', query: { id: 'local' }})" v-if="localFolderSettings.length == 0 && listType1 == 3">去设置扫描地址</div>
     </div>
       <div class="library-view" :class="{'library-view-nologin': !user}">
         <router-view v-slot="{ Component }">
